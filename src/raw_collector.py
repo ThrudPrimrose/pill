@@ -34,7 +34,6 @@ def pull_from_subreddit(subreddit, short_name, begin, end, limit):
 
         if "selftext" in post:
             body = post["selftext"]
-
             body = body.replace("\n", "\\n ")
             # probably nobody will use these
             # body = body.replace("\t", "\\t ")
@@ -56,6 +55,12 @@ def pull_from_subreddit(subreddit, short_name, begin, end, limit):
                 image_file.close()
                 link_image = image_id
                 image_id += 1
+
+        if body == "":
+            if link_image == -1:
+                body = "[No Access To Image]"
+            else:
+                body = "[Image Only]"
 
         writer.writerow([post_id, author, title, body, str(link_image)])
 
