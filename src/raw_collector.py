@@ -3,13 +3,14 @@ import datetime as dt
 import constants
 import csv
 import requests
+import os
 
 api = PushshiftAPI()
 # local order of saved images
-image_id = int(0)
+image_id = int(os.getenv('IMAGE_ID_BEGIN', 0))
 
 
-def pull_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
+def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
 
     # API request for the posts
     posts = api.search_submissions(
@@ -66,6 +67,8 @@ def pull_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
 
         writer.writerow([post_id, author, title, body, str(link_image)])
 
+
+def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
     # API request for the comments
     comments = api.search_comments(
         subreddit=subreddit, limit=limit, before=end, after=begin)
@@ -94,17 +97,36 @@ def pull_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
 
 for y in constants.years:
     for m in constants.months:
-        if m == 12:
-            end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
-            begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
+        for (sub, short) in constants.subreddits:
+            if m == 12:
+                end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
+                begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
 
-            suf = str(y) + "-" + str(m)
-            pull_from_subreddit(
-                constants.fds, constants.fds_short, begin, end, constants.limit, suf)
-        else:
-            end = int(dt.datetime(y, m + 1, 1, 0, 0).timestamp())
-            begin = int(dt.datetime(y, m, 1, 0, 0).timestamp())
+                suf = str(y) + "-" + str(m)
+                pull_posts_from_subreddit(
+                    sub, short, begin, end, constants.limit, suf)
+            else:
+                end = int(dt.datetime(y, m + 1, 1, 0, 0).timestamp())
+                begin = int(dt.datetime(y, m, 1, 0, 0).timestamp())
 
-            suf = str(y) + "-" + str(m)
-            pull_from_subreddit(
-                constants.fds, constants.fds_short, begin, end, constants.limit, suf)
+                suf = str(y) + "-" + str(m)
+                pull_posts_from_subreddit(
+                    sub, short, begin, end, constants.limit, suf)
+
+for y in constants.years:
+    for m in constants.months:
+        for (sub, short) in constants.subreddits:
+            if m == 12:
+                end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
+                begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
+
+                suf = str(y) + "-" + str(m)
+                pull_comments_from_subreddit(
+                    sub, short, begin, end, constants.limit, suf)
+            else:
+                end = int(dt.datetime(y, m + 1, 1, 0, 0).timestamp())
+                begin = int(dt.datetime(y, m, 1, 0, 0).timestamp())
+
+                suf = str(y) + "-" + str(m)
+                pull_comments_from_subreddit(
+                    sub, short, begin, end, constants.limit, suf)

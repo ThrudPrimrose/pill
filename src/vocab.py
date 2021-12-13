@@ -41,7 +41,7 @@ aliases_41 = {
     "enough women like that": "awalt",
     "lay down and rot": "ldar",
     "alpha male of group": "amog",
-    "all men are rapists": "amar",
+    "all men are rapists": "rapist",
     "not like other girls": "nlog",
 }
 
@@ -70,7 +70,9 @@ blackpill_gatekeeping = {
     "roastie",
     "stacy",
     "volcel",
-    "justshower"
+    "justshower",
+    "fakecel",
+    "mentalcel"
 }
 
 blackpill_rant = {
@@ -123,7 +125,6 @@ fds_misandry = {
     "rapist",
     "gaslighting",
     "gaslight",
-    "divorced",
     "scrote"
 }
 
