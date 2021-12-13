@@ -5,11 +5,11 @@ import csv
 import requests
 
 api = PushshiftAPI()
+# local order of saved images
+image_id = int(0)
 
 
-def pull_from_subreddit(subreddit, short_name, begin, end, limit):
-    # local order of saved images
-    image_id = 0
+def pull_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
 
     # API request for the posts
     posts = api.search_submissions(
@@ -19,10 +19,12 @@ def pull_from_subreddit(subreddit, short_name, begin, end, limit):
 
     # python considers . as the directory where the program is run so run the program
     # as python3 src/raw_collector.py and the data will be created in the right place
-    file = open("data/" + short_name + "_posts.csv",
+    file = open("data/" + short_name + "_posts-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
     writer.writerow(("post_id", "author", "title", "body", "image"))
+
+    global image_id
 
     for post in posts:
         # print(post)
@@ -72,7 +74,7 @@ def pull_from_subreddit(subreddit, short_name, begin, end, limit):
 
     # python considers . as the directory where the program is run so run the program
     # as python3 src/raw_collector.py and the data will be created in the right place
-    file = open("data/" + short_name + "_comments.csv",
+    file = open("data/" + short_name + "_comments-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
     writer.writerow(("comment_id", "author", "body"))
@@ -90,9 +92,19 @@ def pull_from_subreddit(subreddit, short_name, begin, end, limit):
         writer.writerow([comment_id, author, body])
 
 
-# get the first $limit posts between the $after and $before dates
-limit = 1000
-end = int(dt.datetime(2021, 12, 8, 0, 0).timestamp())
-begin = int(dt.datetime(2021, 11, 1, 0, 0).timestamp())
+for y in constants.years:
+    for m in constants.months:
+        if m == 12:
+            end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
+            begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
 
-pull_from_subreddit(constants.fds, constants.fds_short, begin, end, limit)
+            suf = str(y) + "-" + str(m)
+            pull_from_subreddit(
+                constants.fds, constants.fds_short, begin, end, constants.limit, suf)
+        else:
+            end = int(dt.datetime(y, m + 1, 1, 0, 0).timestamp())
+            begin = int(dt.datetime(y, m, 1, 0, 0).timestamp())
+
+            suf = str(y) + "-" + str(m)
+            pull_from_subreddit(
+                constants.fds, constants.fds_short, begin, end, constants.limit, suf)
