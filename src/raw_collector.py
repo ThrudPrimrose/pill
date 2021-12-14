@@ -23,7 +23,7 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
     file = open("data/" + short_name + "_posts-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
-    writer.writerow(("post_id", "author", "title", "body", "image"))
+    writer.writerow(("post_id", "author", "title", "upvotes", "body", "image"))
 
     global image_id
 
@@ -32,6 +32,7 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
         author = post["author"]
         title = post["title"]
         post_id = post["id"]
+        upvotes = post["score"]
         body = "Image Only"
         link_image = -1
 
@@ -65,7 +66,8 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
             else:
                 body = "[Image Only]"
 
-        writer.writerow([post_id, author, title, body, str(link_image)])
+        writer.writerow(
+            [post_id, author, title, upvotes, body, str(link_image)])
 
 
 def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
@@ -80,19 +82,20 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
     file = open("data/" + short_name + "_comments-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
-    writer.writerow(("comment_id", "author", "body"))
+    writer.writerow(("comment_id", "author", "upvotes", "body"))
 
     for comment in comments:
         # print(comment.keys())
         author = comment["author"]
         comment_id = comment["id"]
         body = comment["body"]
+        upvotes = comment["score"]
         # print(author)
         # print(comment_id)
         # print(body)
 
         body = body.replace("\n", "\\n ")
-        writer.writerow([comment_id, author, body])
+        writer.writerow([comment_id, author, upvotes, body])
 
 
 for y in constants.years:
@@ -112,6 +115,7 @@ for y in constants.years:
                 suf = str(y) + "-" + str(m)
                 pull_posts_from_subreddit(
                     sub, short, begin, end, constants.limit, suf)
+
 
 for y in constants.years:
     for m in constants.months:
