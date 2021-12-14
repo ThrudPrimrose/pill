@@ -1,1 +1,1 @@
-pip3 install pmaw praw datetime requests
+pip3 install pmaw praw datetime requests matplotlib
