@@ -31,11 +31,11 @@ total_unique_active_users = set()
 
 for y in constants.years_asc:
     for m in constants.months:
-        filepath_posts = "data/" + \
+        filepath_posts = "fds_data/" + \
             str(subreddit_short) + "_" + "posts" + \
             "-" + str(y) + "-" + str(m) + ".csv"
 
-        filepath_comments = "data/" + \
+        filepath_comments = "fds_data/" + \
             str(subreddit_short) + "_" + "comments" + \
             "-" + str(y) + "-" + str(m) + ".csv"
 
@@ -58,7 +58,7 @@ def find_user_count(sub, short):
     limit = 1
     total_users = []
 
-    fname = "data/" + short + "_users.txt"
+    fname = "fds_data/" + short + "_users.txt"
     if not os.path.isfile(fname):
         for y in constants.years_asc:
             for m in constants.months:
@@ -136,39 +136,6 @@ def monthly_difference():
     return (users_left, users_joined, users_remained)
 
 
-def quitters():
-    (sub, subreddit_short) = constants.subreddits[0]
-    quitters = [0] * len(sets)
-
-    for i in range(len(sets)-1):
-        set_pre = sets[i]
-
-        posted_later = False
-        for user in set_pre:
-            for j in range(i+1, len(sets)):
-                if user in sets[j]:
-                    posted_later = True
-                    print("User " + user + " posted later at month " +
-                          str(j) + " check at " + str(i))
-                    break
-
-        if not posted_later:
-            quitters[i] += 1
-
-    label_arr = []
-
-    for y in range(len(constants.years_asc)*len(constants.months)):
-        label_arr.append(y)
-
-    # plt.clf()
-    fig = plt.figure()
-    plt.bar(label_arr, quitters)
-
-    # plt.show()
-
-    fig.savefig(subreddit_short + "_quitters.pdf")
-
-
 def last_active_month():
     (sub, subreddit_short) = constants.subreddits[0]
     user_last_posted_at_that_month = [0] * len(sets)
@@ -204,8 +171,8 @@ def last_active_month():
 
 def footprint():
     (sub, subreddit_short) = constants.subreddits[0]
-    userfootprints = [0] * 10000
-    id_to_1k = list(range(0, 10000))
+    userfootprints = [0] * 500000
+    id_to_1k = list(range(0, 500000))
     maxfootprint = 0
 
     local_unique_active_users = total_unique_active_users
@@ -218,11 +185,11 @@ def footprint():
 
     for y in constants.years_asc:
         for m in constants.months:
-            filepath_posts = "data/" + \
+            filepath_posts = "fds_data/" + \
                 str(subreddit_short) + "_" + "posts" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
-            filepath_comments = "data/" + \
+            filepath_comments = "fds_data/" + \
                 str(subreddit_short) + "_" + "comments" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
@@ -241,7 +208,7 @@ def footprint():
 
     all_values = footprint_dict. values()
     maxfootprint = max(all_values)
-    print(maxfootprint)
+    # print(maxfootprint)
 
     fig = plt.figure()
     idsubset = id_to_1k[1:maxfootprint]
@@ -254,7 +221,7 @@ def footprint():
     footprintsubset20 = userfootprints[1:20]
 
     fig, ax = plt.subplots(3)
-    ax[0].bar(idsubset, footprintsubset)
+    ax[0].plot(idsubset, footprintsubset)
     # plt.plot(footprintsubset, label="active user count")
     fig.suptitle("Amount of posts + comments of a user")
     # ax[0].xlabel("Amount of posts + comments of a user")
@@ -279,7 +246,6 @@ def footprint():
 (sub, short) = constants.subreddits[0]
 total_users = find_user_count(sub, short)
 
-quitters()
 last_active_month()
 footprint()
 
