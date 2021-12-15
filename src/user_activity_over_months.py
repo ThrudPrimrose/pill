@@ -30,7 +30,7 @@ def activity_over_months():
                 csv_reader = DictReader(csv_file)
                 for row in csv_reader:
                     unique_users.add(row["author"])
-                    if row["author"] != "[removed]" and row["author"] != "[deleted]":
+                    if row["author"] != "[removed]" and row["author"] != "[deleted]" and row["author"] != "AutoModerator":
                         if row["author"] in footprint_dict:
                             footprint_dict[row["author"]] += 1
                         else:
@@ -40,7 +40,7 @@ def activity_over_months():
                 csv_reader = DictReader(csv_file)
                 for row in csv_reader:
                     unique_users.add(row["author"])
-                    if row["author"] != "[removed]" and row["author"] != "[deleted]":
+                    if row["author"] != "[removed]" and row["author"] != "[deleted]" and row["author"] != "AutoModerator":
                         if row["author"] in footprint_dict:
                             footprint_dict[row["author"]] += 1
                         else:
@@ -54,6 +54,8 @@ def activity_over_months():
 
     yavg = [0] * len(constants.years_asc) * len(constants.months)
     user_at = [0] * len(constants.years_asc) * len(constants.months)
+
+    vector = []
 
     # plot every user as a separate line, if they are not active at that month write 0
     for usr in unique_users:
@@ -69,6 +71,7 @@ def activity_over_months():
             user_at[i] = len(footprint_dicts[i])
 
         ax[0].plot(usr_activity_vector)
+        vector.append((usr, max(usr_activity_vector)))
 
     # calculate average foorprint of all active users over months
     for i in range(0, len(constants.years_asc) * len(constants.months)):
@@ -78,6 +81,8 @@ def activity_over_months():
             yavg[i] = int((float(yavg[i]) + 0.5) / float(user_at[i]))
 
     print(yavg)
+    (u, v) = max(vector, key=lambda item: item[1])
+    print(u, " ", v)
 
     ax[1].plot(yavg)
     fig.savefig(subreddit_short + "_user_activity_over_months.pdf")
