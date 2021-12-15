@@ -1,6 +1,7 @@
 from csv import DictReader
 import constants
 import os.path
+import matplotlib.pyplot as plt
 
 p_del_acc = 0
 p_tot_acc = 0
@@ -49,8 +50,11 @@ def percentage_deleted(filepath_comments, filepath_posts):
     return (p_per, c_per)
 
 
+p_dels = []
+c_dels = []
+
 for (sub, subreddit_short) in constants.subreddits:
-    for y in constants.years:
+    for y in constants.years_asc:
         for m in constants.months:
             filepath_posts = "data/" + \
                 str(subreddit_short) + "_" + "posts" + \
@@ -64,9 +68,22 @@ for (sub, subreddit_short) in constants.subreddits:
                 (p, c) = percentage_deleted(
                     filepath_comments, filepath_posts)
 
-                print("{:.4f}".format(p) + "% of posts and " + "{:.4f}".format(c) + "% of comments were deleted in: " + str(y) + "." +
+                p_dels.append(p)
+                c_dels.append(c)
+
+                print("{:.4f}".format(100 * p) + "% of posts and " + "{:.4f}".format(100 * c) + "% of comments were deleted in: " + str(y) + "." +
                       str(m) + " in " + subreddit_short)
 
+    print("In total: " + "{:.4f}".format(100 * p_del_acc / p_tot_acc) + "% of posts and " + "{:.4f}".format(100 * c_del_acc / c_tot_acc) + "% of comments were deleted in "
+          + subreddit_short)
 
-print("In total: " + "{:.4f}".format(p_del_acc / p_tot_acc) + "% of posts and " + "{:.4f}".format(c_del_acc / c_tot_acc) + "% of comments were deleted in "
-      + subreddit_short)
+    ids = list(range(0, len(constants.months) * len(constants.years)))
+
+    fig, ax = plt.subplots(2)
+    ax[0].plot(ids, p_dels)
+    fig.suptitle("Amount of posts + comments of a user")
+    ax[0].set_title("Deleted posts")
+    ax[1].plot(ids, c_dels)
+    ax[1].set_title("Deleted comments")
+
+    fig.savefig(subreddit_short + "_deleted.pdf")

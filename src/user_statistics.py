@@ -1,6 +1,5 @@
 from csv import DictReader
 
-import matplotlib
 import constants
 import os.path
 from pmaw import PushshiftAPI
@@ -31,11 +30,11 @@ total_unique_active_users = set()
 
 for y in constants.years_asc:
     for m in constants.months:
-        filepath_posts = "fds_data/" + \
+        filepath_posts = "data/" + \
             str(subreddit_short) + "_" + "posts" + \
             "-" + str(y) + "-" + str(m) + ".csv"
 
-        filepath_comments = "fds_data/" + \
+        filepath_comments = "data/" + \
             str(subreddit_short) + "_" + "comments" + \
             "-" + str(y) + "-" + str(m) + ".csv"
 
@@ -185,11 +184,11 @@ def footprint():
 
     for y in constants.years_asc:
         for m in constants.months:
-            filepath_posts = "fds_data/" + \
+            filepath_posts = "data/" + \
                 str(subreddit_short) + "_" + "posts" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
-            filepath_comments = "fds_data/" + \
+            filepath_comments = "data/" + \
                 str(subreddit_short) + "_" + "comments" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
