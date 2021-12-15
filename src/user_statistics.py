@@ -7,6 +7,7 @@ import datetime as dt
 import matplotlib.pyplot as plt
 
 
+# calculates the amount of unique active users over the history of subreddit
 def find_unique_active_users(filepath_comments, filepath_posts):
     unique_users = set()
 
@@ -23,7 +24,9 @@ def find_unique_active_users(filepath_comments, filepath_posts):
     return unique_users
 
 
+# find unique active users per month, save it as a vector of sets of unique active users
 sets = []
+# total amount over all months
 total_unique_active_users = set()
 
 (sub, subreddit_short) = constants.subreddits[0]
@@ -52,12 +55,13 @@ for y in constants.years_asc:
             sets.append(set())
 
 
+# pull one post from every month to see the total amount of users in a subreddit
 def find_user_count(sub, short):
     api = PushshiftAPI()
     limit = 1
     total_users = []
 
-    fname = "fds_data/" + short + "_users.txt"
+    fname = "data/" + short + "_users.txt"
     if not os.path.isfile(fname):
         for y in constants.years_asc:
             for m in constants.months:
@@ -69,7 +73,6 @@ def find_user_count(sub, short):
                         subreddit=sub, limit=limit, before=end, after=begin)
 
                     for p in posts:
-                        # print(p)
                         ss = p["subreddit_subscribers"]
                         total_users.append(y)
                         total_users.append(m)
@@ -82,7 +85,6 @@ def find_user_count(sub, short):
                         subreddit=sub, limit=limit, before=end, after=begin)
 
                     for p in posts:
-                        # print(p)
                         ss = p["subreddit_subscribers"]
                         total_users.append(y)
                         total_users.append(m)
@@ -111,7 +113,7 @@ def monthly_difference():
     users_joined = [0]
     users_remained = [0]
 
-    (sub, subreddit_short) = constants.subreddits[0]
+    (_, subreddit_short) = constants.subreddits[0]
 
     for i in range(len(sets)-1):
         set_pre = sets[i]
@@ -135,11 +137,10 @@ def monthly_difference():
     return (users_left, users_joined, users_remained)
 
 
+# for any user that first post at month x, find when they posted their last post
 def last_active_month():
-    (sub, subreddit_short) = constants.subreddits[0]
+    (_, subreddit_short) = constants.subreddits[0]
     user_last_posted_at_that_month = [0] * len(sets)
-
-    # print(total_unique_active_users)
 
     for usr in total_unique_active_users:
         last_month = 0
@@ -158,18 +159,17 @@ def last_active_month():
     for y in range(len(constants.years_asc)*len(constants.months)):
         label_arr.append(y)
 
-    # plt.clf()
     fig = plt.figure()
     plt.bar(label_arr, user_last_posted_at_that_month)
     plt.xlabel(
         "A mount of user that wrote their last post or comment at that month")
-    # plt.show()
 
     fig.savefig(subreddit_short + "_last_month_active.pdf")
 
 
+# calculates the total footprint of users over all monnths
 def footprint():
-    (sub, subreddit_short) = constants.subreddits[0]
+    (_, subreddit_short) = constants.subreddits[0]
     userfootprints = [0] * 500000
     id_to_1k = list(range(0, 500000))
     maxfootprint = 0
@@ -179,8 +179,6 @@ def footprint():
 
     for usr in local_unique_active_users:
         footprint_dict[usr] = 0
-
-    # print(total_unique_active_users)
 
     for y in constants.years_asc:
         for m in constants.months:
@@ -195,19 +193,20 @@ def footprint():
             with open(filepath_posts, "r") as csv_file:
                 csv_reader = DictReader(csv_file)
                 for row in csv_reader:
-                    footprint_dict[row["author"]] += 1
+                    if row["author"] != "[removed]" and row["author"] != "[deleted]":
+                        footprint_dict[row["author"]] += 1
 
             with open(filepath_comments, "r") as csv_file:
                 csv_reader = DictReader(csv_file)
                 for row in csv_reader:
-                    footprint_dict[row["author"]] += 1
+                    if row["author"] != "[removed]" and row["author"] != "[deleted]":
+                        footprint_dict[row["author"]] += 1
 
-    for (k, v) in footprint_dict.items():
+    for (_, v) in footprint_dict.items():
         userfootprints[v] += 1
 
     all_values = footprint_dict. values()
     maxfootprint = max(all_values)
-    # print(maxfootprint)
 
     fig = plt.figure()
     idsubset = id_to_1k[1:maxfootprint]
@@ -221,22 +220,9 @@ def footprint():
 
     fig, ax = plt.subplots(3)
     ax[0].plot(idsubset, footprintsubset)
-    # plt.plot(footprintsubset, label="active user count")
     fig.suptitle("Amount of posts + comments of a user")
-    # ax[0].xlabel("Amount of posts + comments of a user")
     ax[0].set_title("Y axis: Users that have post N comments + posts")
-
     ax[1].bar(idsubset50, footprintsubset50)
-    # plt.plot(footprintsubset, label="active user count")
-    # ax[2].xlabel("Amount of posts + comments of a user")
-    # ax[1].set_title("Users that have post N comments + posts")
-    # plt.yscale('log')
-    #
-    # plt.xlabel(
-    #    "Footprint = posts + comments")
-    # plt.ylabel(" Amount of users that have N posts + comments")
-    # plt.set_yscale('log')
-    # plt.show()
     ax[2].bar(idsubset20, footprintsubset20)
 
     fig.savefig(subreddit_short + "_footprint.pdf")
@@ -265,7 +251,6 @@ for st in sets:
 
 (left, joined, remained) = monthly_difference()
 
-# plt.clf()
 fig = plt.figure()
 plt.plot(culled, label="user count")
 plt.plot(active_users, label="active user count")
@@ -274,14 +259,10 @@ plt.plot(joined, label="users posted this month but didnt post last month")
 plt.plot(remained, label="user posted both last and this month")
 
 plt.xlabel("month, as a distance from creation of subreddit")
-# plt.ylabel("count")
-# splt.yscale("log")
 plt.legend(loc='best')
-# plt.show()
 
 fig.savefig(short + "_user_count.pdf")
 
-# plt.clf()
 fig = plt.figure()
 plt.plot(active_users, label="active user count")
 plt.plot(left, label="users posted last month but not this month")
@@ -290,6 +271,5 @@ plt.plot(remained, label="user posted both last and this month")
 
 plt.xlabel("month, as a distance from creation of subreddit")
 plt.legend(loc='best')
-# plt.show()
 
 fig.savefig(short + "_user_activity_change.pdf")

@@ -42,12 +42,10 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
             # probably nobody will use these
             # body = body.replace("\t", "\\t ")
             # body = body.replace("\r", "\\r ")
-            # print(body)
 
         if "url" in post:
             # it can be a video, image or a crosspost
             image_url = post["url"]
-            # print(image_url)
 
             # pull image if it is from i.redd.it
             prefix = "https://i.redd.it/"
@@ -85,14 +83,10 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
     writer.writerow(("comment_id", "author", "upvotes", "body"))
 
     for comment in comments:
-        # print(comment.keys())
         author = comment["author"]
         comment_id = comment["id"]
         body = comment["body"]
         upvotes = comment["score"]
-        # print(author)
-        # print(comment_id)
-        # print(body)
 
         body = body.replace("\n", "\\n ")
         writer.writerow([comment_id, author, upvotes, body])
