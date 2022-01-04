@@ -1,5 +1,4 @@
 aliases_11 = {
-    "lv": "lvm",
     "st.blackops2cel": "blackops2cel",
     "pick-me": "pickme",
     "pickmeism": "pickme",
@@ -13,7 +12,9 @@ aliases_21 = {
     "suicide fuel": "suifuel",
     "just shower": "justshower",
     "level up": "lu",
-    "level down": "ld"
+    "level down": "ld",
+    "low value": "lv",
+    "low effort": "le"
 }
 
 aliases_31 = {
