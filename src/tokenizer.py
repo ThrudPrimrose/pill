@@ -10,23 +10,23 @@ nltk.download('punkt')
 
 def arr_to_string(arr):
     s = str()
-    #s += "["
+    # s += "["
     if len(arr) > 1:
         for i in range(len(arr)-1):
             s += arr[i]
             s += "; "
         s += arr[len(arr)-1]
-        #s += "]"
+        # s += "]"
     elif len(arr) == 1:
         s += arr[0]
-        #s += "]"
+        # s += "]"
     # else:
-        #s += "[]"
+        # s += "[]"
     return s
 
 
 def string_to_arr(str):
-    #"[ ..., a..., "
+    # "[ ..., a..., "
     # read until first ,
     # skip one offeset, repeat
     if not ";" in str:
@@ -102,7 +102,7 @@ def clear_len_3(vec):
     return res
 
 
-def tokenize(filepath, body_offset, outputfile):
+def tokenize(filepath, body_offsets, outputfile):
     if os.path.exists(filepath):
         file = open(filepath)
 
@@ -110,6 +110,7 @@ def tokenize(filepath, body_offset, outputfile):
 
         if os.path.exists(outputfile):
             os.remove(outputfile)
+
         outf = open(outputfile, "w")
         writer = csv.writer(outf)
 
@@ -120,28 +121,36 @@ def tokenize(filepath, body_offset, outputfile):
                 writer.writerow(row)
                 continue
             else:
-                raw_text = row[body_offset]
-                letters_only = re.sub("[^a-zA-Z]", " ", raw_text)
-                raw_tokens = nltk.word_tokenize(letters_only)
+                for body_offset in body_offsets:
+                    if body_offset >= len(row):
+                        continue
 
-                for i in range(len(raw_tokens)):
-                    raw_tokens[i] = raw_tokens[i].lower()
+                    raw_text = row[body_offset]
+                    raw_text = raw_text.strip('"')
+                    raw_text = raw_text.strip("'")
 
-                tt = alias_mapper(raw_tokens)
-                tt = clear_len_1(tt)
-                negate(tt)
-                tt = clear_len_3(tt)
+                    letters_only = re.sub("[^a-zA-Z]", " ", raw_text)
+                    raw_tokens = nltk.word_tokenize(letters_only)
 
-                row[body_offset] = arr_to_string(tt)
+                    for i in range(len(raw_tokens)):
+                        raw_tokens[i] = raw_tokens[i].lower()
+
+                    tt = alias_mapper(raw_tokens)
+                    tt = clear_len_1(tt)
+                    negate(tt)
+                    tt = clear_len_3(tt)
+
+                    row[body_offset] = arr_to_string(tt)
+
                 writer.writerow(row)
 
 
 subs = ["fds", "bps"]
 
 for sub in subs:
-    for (c, offset) in [("comments", 2), ("posts", 3)]:
-        for y in constants.years_asc:
-            for m in constants.months:
+    for y in constants.years_asc:
+        for m in constants.months:
+            for (c, offset) in [("comments", (2, )), ("posts", (2, 3))]:
                 inf = sub + "_data/" + sub + "_" + c + \
                     "-" + str(y) + "-" + str(m) + ".csv"
 
