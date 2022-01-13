@@ -9,9 +9,10 @@ api = PushshiftAPI()
 # local order of saved images
 image_id = int(os.getenv('IMAGE_ID_BEGIN', 0))
 
+subreddits = [("TheRedPill", "trp")]
+
 
 def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
-
     # API request for the posts
     posts = api.search_submissions(
         subreddit=subreddit, limit=limit, before=end, after=begin)
@@ -20,7 +21,11 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
 
     # python considers . as the directory where the program is run so run the program
     # as python3 src/raw_collector.py and the data will be created in the right place
-    file = open("data/" + short_name + "_posts-" + suffix + ".csv",
+    dirpath = short_name + "_data"
+    if not os.path.exists(dirpath):
+        os.mkdir(dirpath)
+
+    file = open(dirpath + "/" + short_name + "_posts-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
     writer.writerow(("post_id", "author", "title", "upvotes", "body", "image"))
@@ -52,7 +57,14 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
             if image_url[0:len(prefix)] == prefix:
                 response = requests.get(image_url)
                 # in the posts i saw they were always jpg
-                image_file = open("data/images/" + str(image_id)+".jpg", "wb")
+                if not os.path.exists(dirpath):
+                    os.mkdir(dirpath)
+                imagepath = dirpath + "/images"
+                if not os.path.exists(imagepath):
+                    os.mkdir(imagepath)
+
+                image_file = open(dirpath + "/images/" +
+                                  str(image_id)+".jpg", "wb")
                 image_file.write(response.content)
                 image_file.close()
                 link_image = image_id
@@ -77,7 +89,11 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
 
     # python considers . as the directory where the program is run so run the program
     # as python3 src/raw_collector.py and the data will be created in the right place
-    file = open("data/" + short_name + "_comments-" + suffix + ".csv",
+    dirpath = short_name + "_data"
+    if not os.path.exists(dirpath):
+        os.mkdir(dirpath)
+
+    file = open(dirpath + "/" + short_name + "_comments-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
     writer.writerow(("comment_id", "author", "upvotes", "body"))
@@ -94,7 +110,7 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
 
 for y in constants.years:
     for m in constants.months:
-        for (sub, short) in constants.subreddits:
+        for (sub, short) in subreddits:
             if m == 12:
                 end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
                 begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
@@ -113,7 +129,7 @@ for y in constants.years:
 
 for y in constants.years:
     for m in constants.months:
-        for (sub, short) in constants.subreddits:
+        for (sub, short) in subreddits:
             if m == 12:
                 end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
                 begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
