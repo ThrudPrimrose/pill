@@ -9,7 +9,8 @@ api = PushshiftAPI()
 # local order of saved images
 image_id = int(os.getenv('IMAGE_ID_BEGIN', 0))
 
-subreddits = [("TheRedPill", "trp")]
+subreddits = [("TheRedPill", "trp"), ("FemaleDatingStrategy",
+                                      "fds"), ("BlackPillScience", "bps")]
 
 
 def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
@@ -37,7 +38,7 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
         author = post["author"]
         title = post["title"]
         post_id = post["id"]
-        upvotes = post["score"]
+        # upvotes = post["score"]
         body = "Image Only"
         link_image = -1
 
@@ -77,7 +78,7 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
                 body = "[Image Only]"
 
         writer.writerow(
-            [post_id, author, title, upvotes, body, str(link_image)])
+            [post_id, author, title, body, str(link_image)])
 
 
 def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
@@ -102,10 +103,10 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
         author = comment["author"]
         comment_id = comment["id"]
         body = comment["body"]
-        upvotes = comment["score"]
+        #upvotes = comment["score"]
 
         body = body.replace("\n", "\\n ")
-        writer.writerow([comment_id, author, upvotes, body])
+        writer.writerow([comment_id, author, body])
 
 
 for y in constants.years:

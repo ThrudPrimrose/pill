@@ -5,6 +5,9 @@ import nltk
 import re
 import vocab
 import constants
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+
 nltk.download('punkt')
 
 
@@ -102,6 +105,9 @@ def clear_len_3(vec):
     return res
 
 
+stop_words = set(stopwords.words('english'))
+
+
 def tokenize(filepath, body_offsets, outputfile):
     if os.path.exists(filepath):
         file = open(filepath)
@@ -137,7 +143,9 @@ def tokenize(filepath, body_offsets, outputfile):
 
                     tt = alias_mapper(raw_tokens)
                     tt = clear_len_1(tt)
-                    negate(tt)
+
+                    no_stop_words = [w for w in tt if not w in stop_words]
+                    negate(no_stop_words)
                     tt = clear_len_3(tt)
 
                     row[body_offset] = arr_to_string(tt)
