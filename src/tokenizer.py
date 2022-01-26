@@ -104,12 +104,12 @@ def negate(vec):
 
 
 def clear_len_1(vec):
-    res = [i for i in vec if len(i) > 1 and i not in short_words_not_to_remove]
+    res = [i for i in vec if len(i) > 1 or i in short_words_not_to_remove]
     return res
 
 
 def clear_len_3(vec):
-    res = [i for i in vec if len(i) > 3 and i not in short_words_not_to_remove]
+    res = [i for i in vec if len(i) > 3 or i in short_words_not_to_remove]
     return res
 
 
