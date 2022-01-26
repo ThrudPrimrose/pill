@@ -3,12 +3,20 @@ import sys
 import csv
 import nltk
 import re
+
+from numpy import short
 import vocab
 import constants
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
 nltk.download('punkt')
+
+
+keys = [set(vocab.aliases_11.values()), set(vocab.aliases_21.values()), set(vocab.aliases_31.values()),
+        set(vocab.aliases_41.values())]
+
+short_words_not_to_remove = set.union(*keys)
 
 
 def arr_to_string(arr):
@@ -96,12 +104,12 @@ def negate(vec):
 
 
 def clear_len_1(vec):
-    res = [i for i in vec if len(i) > 1]
+    res = [i for i in vec if len(i) > 1 and i not in short_words_not_to_remove]
     return res
 
 
 def clear_len_3(vec):
-    res = [i for i in vec if len(i) > 3]
+    res = [i for i in vec if len(i) > 3 and i not in short_words_not_to_remove]
     return res
 
 
@@ -159,10 +167,10 @@ for sub in subs:
     for y in constants.years_asc:
         for m in constants.months:
             for (c, offset) in [("comments", (2, )), ("posts", (2, 3))]:
-                inf = sub + "_data/" + sub + "_" + c + \
+                inf = sub + "_data_old/" + sub + "_" + c + \
                     "-" + str(y) + "-" + str(m) + ".csv"
 
-                outf = sub + "_data/" + sub + "_" + c + "-" + \
+                outf = sub + "_data_old/" + sub + "_" + c + "-" + \
                     str(y) + "-" + str(m) + "-tokenized.csv"
 
                 tokenize(inf, offset, outf)
