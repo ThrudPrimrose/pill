@@ -41,10 +41,9 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
 
         if "selftext" in post:
             body = post["selftext"]
-            body = body.replace("\n", "\\n ")
-            # probably nobody will use these
-            # body = body.replace("\t", "\\t ")
-            # body = body.replace("\r", "\\r ")
+            body = body.replace("\n", " ")
+            body = body.replace("\r", " ")
+            body = body.replace("\t", " ")
 
         if "url" in post:
             # it can be a video, image or a crosspost
