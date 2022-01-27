@@ -13,7 +13,25 @@ from scipy import optimize
 # residuals with gompertz function
 
 
-def residual(params, x, data):
+def first_n_0(arr):
+    a = 0
+    for i in arr:
+        if i == 0:
+            a += 1
+        else:
+            return a
+
+    return a
+
+
+def cull_zeros(arr):
+    n = first_n_0(arr)
+    l = arr[n:]
+    npl = np.array(l)
+    return npl
+
+
+def residual_gompertz(params, x, data):
     # gompertz function
     # https://en.wikipedia.org/wiki/Gompertz_function
     model = params[0] * exp(- exp(params[1] - params[2]*x))
@@ -68,8 +86,8 @@ def activity_over_months(subreddit_short):
             footprint_dicts.append(footprint_dict)
 
     fig = plt.figure()
-    fig, ax = plt.subplots(3)
-    fig.suptitle("User activity over months:")
+    fig, ax = plt.subplots(3, figsize=(10, 10))
+    #fig.suptitle("User activity over months:")
 
     yavg = [0] * len(constants.years_asc) * len(constants.months)
     user_at = [0] * len(constants.years_asc) * len(constants.months)
@@ -89,7 +107,8 @@ def activity_over_months(subreddit_short):
 
             user_at[i] = len(footprint_dicts[i])
 
-        ax[0].plot(usr_activity_vector)
+        # dont plot for every user
+        # ax[N].plot(usr_activity_vector)
         vector.append((usr, max(usr_activity_vector)))
 
     # calculate average foorprint of all active users over months
@@ -103,7 +122,16 @@ def activity_over_months(subreddit_short):
     #(u, v) = max(vector, key=lambda item: item[1])
     #print(u, " ", v)
 
-    x = list(range(len(constants.years_asc) * len(constants.months)))
+    n = first_n_0(yavg)
+    # print(n)
+    # print(len(yavg))
+    yavg = cull_zeros(yavg)
+    # print(len(yavg_culled))
+    add_month = n % 12
+    add_year = n // 12
+    starting_date = [constants.years[0] + add_year, 0 + add_month]
+
+    x = list(range(len(constants.years_asc) * len(constants.months) - n))
 
     params = np.array([1.0, 1.0, 1.0])
 
@@ -119,7 +147,7 @@ def activity_over_months(subreddit_short):
     # print(np.shape(np.array(yavg)))
 
     # polynomial plots
-    ax[1].plot(npx, npyavg, label="avg")
+    ax[0].plot(npx, npyavg, label="avg")
 
     # OLS fitting for polynomials degree 1 to 5
     # https://www.kite.com/python/answers/how-to-plot-a-polynomial-fit-from-an-array-of-points-using-numpy-and-matplotlib-in-python
@@ -127,30 +155,52 @@ def activity_over_months(subreddit_short):
         fit_linear_ols = np.polyfit(npx, npyavg, i)
         poly = np.poly1d(fit_linear_ols)
         poly_y = poly(npx)
-        ax[1].plot(npx, poly_y, label="OLS "+str(i))
+        ax[0].plot(npx, poly_y, label="OLS "+str(i))
 
-    ax[1].legend()
-
+    ax[0].legend()
+    ax[0].set_title('OLS with polynomials of various degrees')
+    ax[0].set_xlabel('month, starting from ' +
+                     str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
+    ax[0].set_ylabel('avg number of post + comment per user')
     # gompertz plots
     out = scipy.optimize.least_squares(
-        residual, x0=params, loss='soft_l1', args=(npx, npyavg))
+        residual_gompertz, x0=params, loss='soft_l1', args=(npx, npyavg))
 
     out_ch = scipy.optimize.least_squares(
-        residual, x0=params, loss='cauchy', args=(npx, npyavg))
+        residual_gompertz, x0=params, loss='cauchy', args=(npx, npyavg))
 
     out_lin = scipy.optimize.least_squares(
-        residual, x0=params, args=(npx, npyavg))
+        residual_gompertz, x0=params, args=(npx, npyavg))
     # print(out)
     # print(out.x)
 
     def gompertz_fit(
         a, params): return params.x[0] * exp(- exp(params.x[1] - params.x[2]*a))
 
-    ax[2].plot(npx, npyavg, label="avg")
-    ax[2].plot(npx, gompertz_fit(npx, out_lin), label="gompertz lin")
-    ax[2].plot(npx, gompertz_fit(npx, out), label="gompertz soft_l1")
-    ax[2].plot(npx, gompertz_fit(npx, out_ch), label="gompertz cauchy")
-    ax[2].legend()
+    ax[1].plot(npx, npyavg, label="avg")
+    ax[1].plot(npx, gompertz_fit(npx, out_lin), label="gompertz lin")
+    ax[1].plot(npx, gompertz_fit(npx, out), label="gompertz soft_l1")
+    ax[1].plot(npx, gompertz_fit(npx, out_ch), label="gompertz cauchy")
+    ax[1].legend()
+    ax[1].set_title('OLS with gompertz function and various loss functions')
+    ax[1].set_xlabel('month, starting from ' +
+                     str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
+    ax[1].set_ylabel('avg number of post + comment per user')
+
+    out_log = np.polyfit(np.log(npx + 1), npyavg, 1)
+
+    def log_output(x, param): return param[0] * np.log(x) + param[1]
+
+    ax[2].plot(npx + 1, npyavg, label="avg")
+    ax[2].plot(npx + 1, log_output(npx + 1, out_log), label="log")
+    ax[2].set_xlabel('month, starting from ' +
+                     str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
+    ax[2].set_ylabel('avg number of post + comment per user')
+    ax[2].set_title('OLS with log transformation on x')
+    # print(out_log)
+
+    fig.tight_layout(pad=3.0)
+    #ax[3].plot(npx, out_log, label="avg")
     fig.savefig(subreddit_short + "_user_activity_over_months.pdf")
 
 
