@@ -33,11 +33,11 @@ total_unique_active_users = set()
 
 for y in constants.years_asc:
     for m in constants.months:
-        filepath_posts = "data/" + \
+        filepath_posts = subreddit_short + "_data/" + \
             str(subreddit_short) + "_" + "posts" + \
             "-" + str(y) + "-" + str(m) + ".csv"
 
-        filepath_comments = "data/" + \
+        filepath_comments = subreddit_short + "_data/" + \
             str(subreddit_short) + "_" + "comments" + \
             "-" + str(y) + "-" + str(m) + ".csv"
 
@@ -182,11 +182,11 @@ def footprint():
 
     for y in constants.years_asc:
         for m in constants.months:
-            filepath_posts = "data/" + \
+            filepath_posts = subreddit_short + "_data/" + \
                 str(subreddit_short) + "_" + "posts" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
-            filepath_comments = "data/" + \
+            filepath_comments = subreddit_short + "_data/" + \
                 str(subreddit_short) + "_" + "comments" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 

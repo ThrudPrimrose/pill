@@ -2,6 +2,7 @@ aliases_11 = {
     "st.blackops2cel": "blackops2cel",
     "pick-me": "pickme",
     "pickmeism": "pickme",
+    "cesspit": "cesspool"
 }
 
 aliases_21 = {

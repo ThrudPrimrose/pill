@@ -2,9 +2,44 @@ import constants
 import matplotlib.pyplot as plt
 from csv import DictReader
 
+import matplotlib.pyplot as plt
+import numpy as np
+import os
 
-def activity_over_months():
-    (_, subreddit_short) = constants.subreddits[0]
+from numpy import random, exp
+import scipy
+from scipy import optimize
+
+# residuals with gompertz function
+
+
+def first_n_0(arr):
+    a = 0
+    for i in arr:
+        if i == 0:
+            a += 1
+        else:
+            return a
+
+    return a
+
+
+def cull_zeros(arr):
+    n = first_n_0(arr)
+    l = arr[n:]
+    npl = np.array(l)
+    return npl
+
+
+def residual_gompertz(params, x, data):
+    # gompertz function
+    # https://en.wikipedia.org/wiki/Gompertz_function
+    model = params[0] * exp(- exp(params[1] - params[2]*x))
+
+    return data-model
+
+
+def activity_over_months(subreddit_short):
 
     # vector of dictionaries
     # has the form (user_id, #comments + #posts at month i)
@@ -18,39 +53,41 @@ def activity_over_months():
         for m in constants.months:
             footprint_dict = dict()
 
-            filepath_posts = "data/" + \
+            filepath_posts = subreddit_short + "_data_old/" + \
                 str(subreddit_short) + "_" + "posts" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
-            filepath_comments = "data/" + \
+            filepath_comments = subreddit_short + "_data_old/" + \
                 str(subreddit_short) + "_" + "comments" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
-            with open(filepath_posts, "r") as csv_file:
-                csv_reader = DictReader(csv_file)
-                for row in csv_reader:
-                    unique_users.add(row["author"])
-                    if row["author"] != "[removed]" and row["author"] != "[deleted]" and row["author"] != "AutoModerator":
-                        if row["author"] in footprint_dict:
-                            footprint_dict[row["author"]] += 1
-                        else:
-                            footprint_dict[row["author"]] = 1
+            if os.path.exists(filepath_posts):
+                with open(filepath_posts, "r") as csv_file:
+                    csv_reader = DictReader(csv_file)
+                    for row in csv_reader:
+                        unique_users.add(row["author"])
+                        if row["author"] != "[removed]" and row["author"] != "[deleted]" and row["author"] != "AutoModerator":
+                            if row["author"] in footprint_dict:
+                                footprint_dict[row["author"]] += 1
+                            else:
+                                footprint_dict[row["author"]] = 1
 
-            with open(filepath_comments, "r") as csv_file:
-                csv_reader = DictReader(csv_file)
-                for row in csv_reader:
-                    unique_users.add(row["author"])
-                    if row["author"] != "[removed]" and row["author"] != "[deleted]" and row["author"] != "AutoModerator":
-                        if row["author"] in footprint_dict:
-                            footprint_dict[row["author"]] += 1
-                        else:
-                            footprint_dict[row["author"]] = 1
+            if os.path.exists(filepath_comments):
+                with open(filepath_comments, "r") as csv_file:
+                    csv_reader = DictReader(csv_file)
+                    for row in csv_reader:
+                        unique_users.add(row["author"])
+                        if row["author"] != "[removed]" and row["author"] != "[deleted]" and row["author"] != "AutoModerator":
+                            if row["author"] in footprint_dict:
+                                footprint_dict[row["author"]] += 1
+                            else:
+                                footprint_dict[row["author"]] = 1
 
             footprint_dicts.append(footprint_dict)
 
     fig = plt.figure()
-    fig, ax = plt.subplots(2)
-    fig.suptitle("User activity over months:")
+    fig, ax = plt.subplots(3, figsize=(10, 10))
+    #fig.suptitle("User activity over months:")
 
     yavg = [0] * len(constants.years_asc) * len(constants.months)
     user_at = [0] * len(constants.years_asc) * len(constants.months)
@@ -70,7 +107,8 @@ def activity_over_months():
 
             user_at[i] = len(footprint_dicts[i])
 
-        ax[0].plot(usr_activity_vector)
+        # dont plot for every user
+        # ax[N].plot(usr_activity_vector)
         vector.append((usr, max(usr_activity_vector)))
 
     # calculate average foorprint of all active users over months
@@ -80,12 +118,90 @@ def activity_over_months():
         else:
             yavg[i] = int((float(yavg[i]) + 0.5) / float(user_at[i]))
 
-    print(yavg)
-    (u, v) = max(vector, key=lambda item: item[1])
-    print(u, " ", v)
+    # print(yavg)
+    #(u, v) = max(vector, key=lambda item: item[1])
+    #print(u, " ", v)
 
-    ax[1].plot(yavg)
+    n = first_n_0(yavg)
+    # print(n)
+    # print(len(yavg))
+    yavg = cull_zeros(yavg)
+    # print(len(yavg_culled))
+    add_month = n % 12
+    add_year = n // 12
+    starting_date = [constants.years[0] + add_year, 0 + add_month]
+
+    x = list(range(len(constants.years_asc) * len(constants.months) - n))
+
+    params = np.array([1.0, 1.0, 1.0])
+
+    npx = np.array(x)
+    npyavg = np.array(yavg)
+
+    # generate experimental uncertainties
+    uncertainty = abs(0.16 + random.normal(size=len(x), scale=0.05))
+
+    # print(np.array(x))
+    # print(np.shape(np.array(x)))
+    # print(np.array(yavg))
+    # print(np.shape(np.array(yavg)))
+
+    # polynomial plots
+    ax[0].plot(npx, npyavg, label="avg")
+
+    # OLS fitting for polynomials degree 1 to 5
+    # https://www.kite.com/python/answers/how-to-plot-a-polynomial-fit-from-an-array-of-points-using-numpy-and-matplotlib-in-python
+    for i in [2, 3, 4, 5]:
+        fit_linear_ols = np.polyfit(npx, npyavg, i)
+        poly = np.poly1d(fit_linear_ols)
+        poly_y = poly(npx)
+        ax[0].plot(npx, poly_y, label="OLS "+str(i))
+
+    ax[0].legend()
+    ax[0].set_title('OLS with polynomials of various degrees')
+    ax[0].set_xlabel('month, starting from ' +
+                     str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
+    ax[0].set_ylabel('avg number of post + comment per user')
+    # gompertz plots
+    out = scipy.optimize.least_squares(
+        residual_gompertz, x0=params, loss='soft_l1', args=(npx, npyavg))
+
+    out_ch = scipy.optimize.least_squares(
+        residual_gompertz, x0=params, loss='cauchy', args=(npx, npyavg))
+
+    out_lin = scipy.optimize.least_squares(
+        residual_gompertz, x0=params, args=(npx, npyavg))
+    # print(out)
+    # print(out.x)
+
+    def gompertz_fit(
+        a, params): return params.x[0] * exp(- exp(params.x[1] - params.x[2]*a))
+
+    ax[1].plot(npx, npyavg, label="avg")
+    ax[1].plot(npx, gompertz_fit(npx, out_lin), label="gompertz lin")
+    ax[1].plot(npx, gompertz_fit(npx, out), label="gompertz soft_l1")
+    ax[1].plot(npx, gompertz_fit(npx, out_ch), label="gompertz cauchy")
+    ax[1].legend()
+    ax[1].set_title('OLS with gompertz function and various loss functions')
+    ax[1].set_xlabel('month, starting from ' +
+                     str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
+    ax[1].set_ylabel('avg number of post + comment per user')
+
+    out_log = np.polyfit(np.log(npx + 1), npyavg, 1)
+
+    def log_output(x, param): return param[0] * np.log(x) + param[1]
+
+    ax[2].plot(npx + 1, npyavg, label="avg")
+    ax[2].plot(npx + 1, log_output(npx + 1, out_log), label="log")
+    ax[2].set_xlabel('month, starting from ' +
+                     str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
+    ax[2].set_ylabel('avg number of post + comment per user')
+    ax[2].set_title('OLS with log transformation on x')
+    # print(out_log)
+
+    fig.tight_layout(pad=3.0)
+    #ax[3].plot(npx, out_log, label="avg")
     fig.savefig(subreddit_short + "_user_activity_over_months.pdf")
 
 
-activity_over_months()
+activity_over_months("fds")

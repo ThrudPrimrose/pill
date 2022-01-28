@@ -11,7 +11,6 @@ image_id = int(os.getenv('IMAGE_ID_BEGIN', 0))
 
 
 def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
-
     # API request for the posts
     posts = api.search_submissions(
         subreddit=subreddit, limit=limit, before=end, after=begin)
@@ -20,7 +19,11 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
 
     # python considers . as the directory where the program is run so run the program
     # as python3 src/raw_collector.py and the data will be created in the right place
-    file = open("data/" + short_name + "_posts-" + suffix + ".csv",
+    dirpath = short_name + "_data"
+    if not os.path.exists(dirpath):
+        os.mkdir(dirpath)
+
+    file = open(dirpath + "/" + short_name + "_posts-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
     writer.writerow(("post_id", "author", "title", "upvotes", "body", "image"))
@@ -32,16 +35,15 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
         author = post["author"]
         title = post["title"]
         post_id = post["id"]
-        upvotes = post["score"]
+        # upvotes = post["score"]
         body = "Image Only"
         link_image = -1
 
         if "selftext" in post:
             body = post["selftext"]
-            body = body.replace("\n", "\\n ")
-            # probably nobody will use these
-            # body = body.replace("\t", "\\t ")
-            # body = body.replace("\r", "\\r ")
+            body = body.replace("\n", " ")
+            body = body.replace("\r", " ")
+            body = body.replace("\t", " ")
 
         if "url" in post:
             # it can be a video, image or a crosspost
@@ -52,7 +54,14 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
             if image_url[0:len(prefix)] == prefix:
                 response = requests.get(image_url)
                 # in the posts i saw they were always jpg
-                image_file = open("data/images/" + str(image_id)+".jpg", "wb")
+                if not os.path.exists(dirpath):
+                    os.mkdir(dirpath)
+                imagepath = dirpath + "/images"
+                if not os.path.exists(imagepath):
+                    os.mkdir(imagepath)
+
+                image_file = open(dirpath + "/images/" +
+                                  str(image_id)+".jpg", "wb")
                 image_file.write(response.content)
                 image_file.close()
                 link_image = image_id
@@ -65,7 +74,7 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
                 body = "[Image Only]"
 
         writer.writerow(
-            [post_id, author, title, upvotes, body, str(link_image)])
+            [post_id, author, title, body, str(link_image)])
 
 
 def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
@@ -77,7 +86,11 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
 
     # python considers . as the directory where the program is run so run the program
     # as python3 src/raw_collector.py and the data will be created in the right place
-    file = open("data/" + short_name + "_comments-" + suffix + ".csv",
+    dirpath = short_name + "_data"
+    if not os.path.exists(dirpath):
+        os.mkdir(dirpath)
+
+    file = open(dirpath + "/" + short_name + "_comments-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
     writer.writerow(("comment_id", "author", "upvotes", "body"))
@@ -86,10 +99,10 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
         author = comment["author"]
         comment_id = comment["id"]
         body = comment["body"]
-        upvotes = comment["score"]
+        #upvotes = comment["score"]
 
         body = body.replace("\n", "\\n ")
-        writer.writerow([comment_id, author, upvotes, body])
+        writer.writerow([comment_id, author, body])
 
 
 for y in constants.years:
