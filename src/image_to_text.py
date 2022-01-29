@@ -29,7 +29,7 @@ def preprocess_image(img):
     text = pytesseract.image_to_string(Image.open('temp2.jpg'))
     return text
 
-print('buraya da mi girnmiyosun abi')
+#doesnt work quite right
 path = r"/Users/sezinoztufek/Desktop/data_with_images/to/dir/*.csv"
 print('Hey')
 for file in glob.glob(path):
