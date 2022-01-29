@@ -59,7 +59,7 @@ def gen_user_stats(sub, subreddit_short):
         limit = 1
         total_users = []
 
-        fname = "data/" + short + "_users.txt"
+        fname = short + "_data/" + short + "_users.txt"
         if not os.path.isfile(fname):
             for y in constants.years_asc:
                 for m in constants.months:
@@ -189,17 +189,25 @@ def gen_user_stats(sub, subreddit_short):
                     str(subreddit_short) + "_" + "comments" + \
                     "-" + str(y) + "-" + str(m) + ".csv"
 
-                with open(filepath_posts, "r") as csv_file:
-                    csv_reader = DictReader(csv_file)
-                    for row in csv_reader:
-                        if row["author"] != "[removed]" and row["author"] != "[deleted]":
-                            footprint_dict[row["author"]] += 1
+                if os.path.isfile(filepath_posts):
+                    with open(filepath_posts, "r") as csv_file:
+                        csv_reader = DictReader(csv_file)
+                        for row in csv_reader:
+                            if row["author"] != "[removed]" and row["author"] != "[deleted]":
+                                if not row["author"] in footprint_dict.keys():
+                                    footprint_dict[row["author"]] = 1
+                                else:
+                                    footprint_dict[row["author"]] += 1
 
-                with open(filepath_comments, "r") as csv_file:
-                    csv_reader = DictReader(csv_file)
-                    for row in csv_reader:
-                        if row["author"] != "[removed]" and row["author"] != "[deleted]":
-                            footprint_dict[row["author"]] += 1
+                if os.path.isfile(filepath_comments):
+                    with open(filepath_comments, "r") as csv_file:
+                        csv_reader = DictReader(csv_file)
+                        for row in csv_reader:
+                            if row["author"] != "[removed]" and row["author"] != "[deleted]":
+                                if not row["author"] in footprint_dict.keys():
+                                    footprint_dict[row["author"]] = 1
+                                else:
+                                    footprint_dict[row["author"]] += 1
 
         for (_, v) in footprint_dict.items():
             userfootprints[v] += 1
