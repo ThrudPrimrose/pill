@@ -4,6 +4,8 @@ import constants
 import csv
 import requests
 import os
+import logging
+import traceback
 
 api = PushshiftAPI()
 # local order of saved images
@@ -26,7 +28,7 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
     file = open(dirpath + "/" + short_name + "_posts-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
-    writer.writerow(("post_id", "author", "title", "upvotes", "body", "image"))
+    writer.writerow(("post_id", "author", "title", "body", "image"))
 
     global image_id
 
@@ -35,7 +37,6 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
         author = post["author"]
         title = post["title"]
         post_id = post["id"]
-        # upvotes = post["score"]
         body = "Image Only"
         link_image = -1
 
@@ -93,13 +94,12 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
     file = open(dirpath + "/" + short_name + "_comments-" + suffix + ".csv",
                 "w", newline="", encoding="utf-8")
     writer = csv.writer(file, lineterminator="\n")
-    writer.writerow(("comment_id", "author", "upvotes", "body"))
+    writer.writerow(("comment_id", "author", "body"))
 
     for comment in comments:
         author = comment["author"]
         comment_id = comment["id"]
         body = comment["body"]
-        #upvotes = comment["score"]
 
         body = body.replace("\n", "\\n ")
         writer.writerow([comment_id, author, body])
@@ -107,37 +107,64 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
 
 for y in constants.years:
     for m in constants.months:
-        for (sub, short) in constants.subreddits:
+        for (sub, short) in [("TheRedPill", "trp")]:
             if m == 12:
                 end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
                 begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
 
                 suf = str(y) + "-" + str(m)
-                pull_posts_from_subreddit(
-                    sub, short, begin, end, constants.limit, suf)
+                print("pulling posts of " + short +
+                      ": " + str(y) + "." + str(m))
+                try:
+                    pull_posts_from_subreddit(
+                        sub, short, begin, end, constants.limit, suf)
+                except Exception as e:
+                    print("SKIP DUE TO ERROR | pulling posts of: " +
+                          short + ": " + str(y) + "." + str(m))
+                    logging.error(traceback.format_exc())
             else:
                 end = int(dt.datetime(y, m + 1, 1, 0, 0).timestamp())
                 begin = int(dt.datetime(y, m, 1, 0, 0).timestamp())
 
                 suf = str(y) + "-" + str(m)
-                pull_posts_from_subreddit(
-                    sub, short, begin, end, constants.limit, suf)
-
+                print("pulling posts of " + short +
+                      ": " + str(y) + "." + str(m))
+                try:
+                    pull_posts_from_subreddit(
+                        sub, short, begin, end, constants.limit, suf)
+                except Exception as e:
+                    print("SKIP DUE TO ERROR | pulling posts of: " +
+                          short + ": " + str(y) + "." + str(m))
+                    logging.error(traceback.format_exc())
 
 for y in constants.years:
     for m in constants.months:
-        for (sub, short) in constants.subreddits:
+        for (sub, short) in [("TheRedPill", "trp")]:
             if m == 12:
                 end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
                 begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
 
                 suf = str(y) + "-" + str(m)
-                pull_comments_from_subreddit(
-                    sub, short, begin, end, constants.limit, suf)
+                print("pulling comments of " + short +
+                      ": " + str(y) + "." + str(m))
+                try:
+                    pull_comments_from_subreddit(
+                        sub, short, begin, end, constants.limit, suf)
+                except Exception as e:
+                    print("SKIP DUE TO ERROR | pulling comments of: " +
+                          short + ": " + str(y) + "." + str(m))
+                    logging.error(traceback.format_exc())
             else:
                 end = int(dt.datetime(y, m + 1, 1, 0, 0).timestamp())
                 begin = int(dt.datetime(y, m, 1, 0, 0).timestamp())
 
                 suf = str(y) + "-" + str(m)
-                pull_comments_from_subreddit(
-                    sub, short, begin, end, constants.limit, suf)
+                print("pulling comments of " + short +
+                      ": " + str(y) + "." + str(m))
+                try:
+                    pull_comments_from_subreddit(
+                        sub, short, begin, end, constants.limit, suf)
+                except Exception as e:
+                    print("SKIP DUE TO ERROR | pulling comments of: " +
+                          short + ": " + str(y) + "." + str(m))
+                    logging.error(traceback.format_exc())

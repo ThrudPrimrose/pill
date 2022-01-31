@@ -161,16 +161,14 @@ def tokenize(filepath, body_offsets, outputfile):
                 writer.writerow(row)
 
 
-subs = ["fds", "bps"]
-
-for sub in subs:
+for (_, sub) in constants.subreddits:
     for y in constants.years_asc:
         for m in constants.months:
             for (c, offset) in [("comments", (2, )), ("posts", (2, 3))]:
-                inf = sub + "_data_old/" + sub + "_" + c + \
+                inf = sub + "_data/" + sub + "_" + c + \
                     "-" + str(y) + "-" + str(m) + ".csv"
 
-                outf = sub + "_data_old/" + sub + "_" + c + "-" + \
+                outf = sub + "_data/" + sub + "_" + c + "-" + \
                     str(y) + "-" + str(m) + "-tokenized.csv"
 
                 tokenize(inf, offset, outf)

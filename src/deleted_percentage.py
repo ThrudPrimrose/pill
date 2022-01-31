@@ -2,6 +2,9 @@ from csv import DictReader
 import constants
 import os.path
 import matplotlib.pyplot as plt
+import numpy as np
+from csv import reader
+import utility
 
 p_del_acc = 0
 p_tot_acc = 0
@@ -17,16 +20,16 @@ def percentage_deleted(filepath_comments, filepath_posts):
     c_total = 0
 
     with open(filepath_posts, "r") as csv_file:
-        csv_reader = DictReader(csv_file)
+        csv_reader = reader(csv_file)
         for row in csv_reader:
-            if row["body"] == "[removed]":
+            if "[removed]" in row:
                 p_deleted += 1
             p_total += 1
 
     with open(filepath_comments, "r") as csv_file:
-        csv_reader = DictReader(csv_file)
+        csv_reader = reader(csv_file)
         for row in csv_reader:
-            if row["body"] == "[removed]":
+            if "[removed]" in row:
                 c_deleted += 1
             c_total += 1
 
@@ -54,6 +57,14 @@ p_dels = []
 c_dels = []
 
 for (sub, subreddit_short) in constants.subreddits:
+    # reset global variables before continuing with new subreddits
+    p_dels = []
+    c_dels = []
+    p_del_acc = 0
+    p_tot_acc = 0
+    c_del_acc = 0
+    c_tot_acc = 0
+
     for y in constants.years_asc:
         for m in constants.months:
             filepath_posts = subreddit_short + "_data/" + \
@@ -73,6 +84,12 @@ for (sub, subreddit_short) in constants.subreddits:
 
                 print("{:.4f}".format(100 * p) + "% of posts and " + "{:.4f}".format(100 * c) + "% of comments were deleted in: " + str(y) + "." +
                       str(m) + " in " + subreddit_short)
+            else:
+                print("At least one of: " + filepath_comments +
+                      " " + filepath_posts + " don't exist")
+
+                p_dels.append(0.0)
+                c_dels.append(0.0)
 
     print("In total: " + "{:.4f}".format(100 * p_del_acc / p_tot_acc) + "% of posts and " + "{:.4f}".format(100 * c_del_acc / c_tot_acc) + "% of comments were deleted in "
           + subreddit_short)
@@ -80,10 +97,51 @@ for (sub, subreddit_short) in constants.subreddits:
     ids = list(range(0, len(constants.months) * len(constants.years)))
 
     fig, ax = plt.subplots(2)
+
+    npx = np.array(ids)
+    # print(npx)
+    npcomments = np.array(p_dels)
+    # print(npcomments)
+    npposts = np.array(c_dels)
+    # print(npposts)
+
+    # for months that pmaw fails we just set it to the average of left and right
+    def clean(c_dels):
+        for i in range(len(c_dels)-1):
+            if i != 0 and i != len(c_dels)-1 and c_dels[i-1] != 0.0 and c_dels[i] == 0.0 and c_dels[i+1] != 0.0:
+                c_dels[i] = (c_dels[i-1] + c_dels[i+1])/2.0
+
+    clean(p_dels)
+    clean(c_dels)
+
+    npposts, npx_p = utility.cull_zeros(p_dels, ids)
+    npcomments, npx_c = utility.cull_zeros(c_dels, ids)
     ax[0].plot(ids, p_dels)
     fig.suptitle("Amount of posts + comments of a user")
     ax[0].set_title("Deleted posts")
     ax[1].plot(ids, c_dels)
     ax[1].set_title("Deleted comments")
+
+    # OLS fitting for polynomials degree 1 to 5
+    # https://www.kite.com/python/answers/how-to-plot-a-polynomial-fit-from-an-array-of-points-using-numpy-and-matplotlib-in-python
+    for i in [1, 3]:
+        fit_linear_ols = np.polyfit(npx_c, npcomments, i)
+        poly = np.poly1d(fit_linear_ols)
+        poly_y = poly(npx_c)
+        ax[1].plot(npx_c, poly_y, label="OLS "+str(i))
+
+    for i in [1, 3]:
+        fit_linear_ols = np.polyfit(npx_p, npposts, i)
+        poly = np.poly1d(fit_linear_ols)
+        poly_y = poly(npx_p)
+        ax[0].plot(npx_p, poly_y, label="OLS "+str(i))
+
+    ax[0].legend()
+    ax[1].legend()
+    #ax[0].set_title('OLS with polynomials of various degrees')
+    # ax[0].set_xlabel('month, starting from ' +
+    #                 str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
+    #ax[0].set_ylabel('avg number of post + comment per user')
+    fig.tight_layout(pad=3.0)
 
     fig.savefig(subreddit_short + "_deleted.pdf")

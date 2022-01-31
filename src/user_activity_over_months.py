@@ -34,7 +34,15 @@ def cull_zeros(arr):
 def residual_gompertz(params, x, data):
     # gompertz function
     # https://en.wikipedia.org/wiki/Gompertz_function
-    model = params[0] * exp(- exp(params[1] - params[2]*x))
+    model = params[0] * exp(-exp(params[1] - params[2]*x))
+
+    return data-model
+
+
+def residual_decay_exp(params, x, data):
+    # gompertz function
+    # https://en.wikipedia.org/wiki/Gompertz_function
+    model = params[0] * exp(params[1]*x)
 
     return data-model
 
@@ -53,11 +61,11 @@ def activity_over_months(subreddit_short):
         for m in constants.months:
             footprint_dict = dict()
 
-            filepath_posts = subreddit_short + "_data_old/" + \
+            filepath_posts = subreddit_short + "_data/" + \
                 str(subreddit_short) + "_" + "posts" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
-            filepath_comments = subreddit_short + "_data_old/" + \
+            filepath_comments = subreddit_short + "_data/" + \
                 str(subreddit_short) + "_" + "comments" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
 
@@ -84,10 +92,6 @@ def activity_over_months(subreddit_short):
                                 footprint_dict[row["author"]] = 1
 
             footprint_dicts.append(footprint_dict)
-
-    fig = plt.figure()
-    fig, ax = plt.subplots(3, figsize=(10, 10))
-    #fig.suptitle("User activity over months:")
 
     yavg = [0] * len(constants.years_asc) * len(constants.months)
     user_at = [0] * len(constants.years_asc) * len(constants.months)
@@ -119,8 +123,8 @@ def activity_over_months(subreddit_short):
             yavg[i] = int((float(yavg[i]) + 0.5) / float(user_at[i]))
 
     # print(yavg)
-    #(u, v) = max(vector, key=lambda item: item[1])
-    #print(u, " ", v)
+    # (u, v) = max(vector, key=lambda item: item[1])
+    # print(u, " ", v)
 
     n = first_n_0(yavg)
     # print(n)
@@ -145,6 +149,8 @@ def activity_over_months(subreddit_short):
     # print(np.shape(np.array(x)))
     # print(np.array(yavg))
     # print(np.shape(np.array(yavg)))
+    fig = plt.figure()
+    fig, ax = plt.subplots(4, figsize=(10, 10))
 
     # polynomial plots
     ax[0].plot(npx, npyavg, label="avg")
@@ -199,9 +205,49 @@ def activity_over_months(subreddit_short):
     ax[2].set_title('OLS with log transformation on x')
     # print(out_log)
 
+    # max_el_y = max(npyavg)
+    max_el_y = np.argmax(npyavg)
+    # print(max_el_y)
+
+    x_left = npx[:max_el_y+1]
+    # print(x_left)
+    x_right = npx[max_el_y:]
+    # print(x_right)
+    y_left = npyavg[:max_el_y+1]
+    # print(y_left)
+    y_right = npyavg[max_el_y:]
+    # print(y_right)
+
+    exp_params = [y_left[0], -1.0]
+
+    growth = scipy.optimize.least_squares(
+        residual_gompertz, x0=params, loss='soft_l1', args=(x_left, y_left))
+
+    decay_exp = scipy.optimize.least_squares(
+        residual_decay_exp, x0=exp_params, loss='soft_l1', args=(x_right, y_right))
+
+    def decay_exp_fit(
+        a, params): return params.x[0] * exp(params.x[1]*a)
+
+    ax[3].plot(npx, npyavg, label="avg")
+    ax[3].plot(x_left, gompertz_fit(x_left, growth), label="growth(gompertz)")
+    ax[3].plot(x_right, decay_exp_fit(x_right, decay_exp), label="decay(exp)")
+
+    decay_lin = np.polyfit(x_right, y_right, 1)
+    poly = np.poly1d(decay_lin)
+    poly_y = poly(x_right)
+    ax[3].plot(x_right, poly_y, label="OLS 1")
+
+    ax[3].legend()
+    ax[3].set_xlabel('month, starting from ' +
+                     str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
+    ax[3].set_ylabel('avg number of post + comment per user')
+    ax[3].set_title('OLS with living and dying phases')
+
     fig.tight_layout(pad=3.0)
-    #ax[3].plot(npx, out_log, label="avg")
+    # ax[3].plot(npx, out_log, label="avg")
     fig.savefig(subreddit_short + "_user_activity_over_months.pdf")
 
 
-activity_over_months("fds")
+for (_, sub) in constants.subreddits:
+    activity_over_months(sub)
