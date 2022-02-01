@@ -9,6 +9,8 @@ import vocab
 import constants
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer, PorterStemmer
+from enum import Enum
 
 nltk.download('punkt')
 
@@ -17,6 +19,9 @@ keys = [set(vocab.aliases_11.values()), set(vocab.aliases_21.values()), set(voca
         set(vocab.aliases_41.values())]
 
 short_words_not_to_remove = set.union(*keys)
+
+lemmatizer = WordNetLemmatizer()
+stemmer = PorterStemmer()
 
 
 def arr_to_string(arr):
@@ -116,7 +121,28 @@ def clear_len_3(vec):
 stop_words = set(stopwords.words('english'))
 
 
-def tokenize(filepath, body_offsets, outputfile):
+def lemmetize(tokens):
+    a = []
+    for token in tokens:
+        lemmetized_word = lemmatizer.lemmatize(token)
+        a.append(lemmetized_word)
+    return a
+
+
+def stem(tokens):
+    a = []
+    for token in tokens:
+        stem = stemmer.stem(token)
+        a.append(stem)
+    return a
+
+
+class Operation(Enum):
+    lemmatize = 1
+    stemming = 2
+
+
+def tokenize_and_lemmetize(filepath, body_offsets, outputfile, op):
     if os.path.exists(filepath):
         file = open(filepath)
 
@@ -156,11 +182,18 @@ def tokenize(filepath, body_offsets, outputfile):
                     negate(no_stop_words)
                     tt = clear_len_3(tt)
 
-                    row[body_offset] = arr_to_string(tt)
+                    if op == Operation.lemmatize:
+                        lemmetized = lemmetize(tt)
+                        row[body_offset] = arr_to_string(lemmetized)
+                    if op == Operation.stemming:
+                        stemmed = stem(tt)
+                        row[body_offset] = arr_to_string(stemmed)
+                    # print(tt)
 
                 writer.writerow(row)
 
 
+# lemmatization feels better
 for (_, sub) in constants.subreddits:
     for y in constants.years_asc:
         for m in constants.months:
@@ -169,6 +202,12 @@ for (_, sub) in constants.subreddits:
                     "-" + str(y) + "-" + str(m) + ".csv"
 
                 outf = sub + "_data/" + sub + "_" + c + "-" + \
-                    str(y) + "-" + str(m) + "-tokenized.csv"
+                    str(y) + "-" + str(m) + "-lemmetized.csv"
 
-                tokenize(inf, offset, outf)
+                print("Lemmetize: ", inf, " to ", outf)
+                tokenize_and_lemmetize(inf, offset, outf, Operation.lemmatize)
+
+                outf = sub + "_data/" + sub + "_" + c + "-" + \
+                    str(y) + "-" + str(m) + "-stemmed.csv"
+                print("Stem: ", inf, " to ", outf)
+                tokenize_and_lemmetize(inf, offset, outf, Operation.stemming)
