@@ -104,12 +104,12 @@ def activity_over_months(subreddit_short):
 
         for i in range(0, len(constants.years_asc) * len(constants.months)):
             if usr in footprint_dicts[i]:
-                yavg[i] += footprint_dicts[i][usr]
-                usr_activity_vector.append(footprint_dicts[i][usr])
+                yavg[i] += float(footprint_dicts[i][usr])
+                usr_activity_vector.append(float(footprint_dicts[i][usr]))
             else:
                 usr_activity_vector.append(0)
 
-            user_at[i] = len(footprint_dicts[i])
+            user_at[i] = float(len(footprint_dicts[i]))
 
         # dont plot for every user
         # ax[N].plot(usr_activity_vector)
@@ -120,7 +120,7 @@ def activity_over_months(subreddit_short):
         if user_at[i] == 0:
             yavg[i] = 0
         else:
-            yavg[i] = int((float(yavg[i]) + 0.5) / float(user_at[i]))
+            yavg[i] = float((float(yavg[i]) + 0.5) / float(user_at[i]))
 
     # print(yavg)
     # (u, v) = max(vector, key=lambda item: item[1])

@@ -4,9 +4,8 @@ import constants
 import nltk
 import csv
 import os
-
-
-subs = ["fds", "bps"]
+import vocab
+import numpy as np
 
 
 def string_to_arr(i_str):
@@ -20,7 +19,7 @@ def string_to_arr(i_str):
         # print(str)
         return [i_str]
     else:
-        x = str.split("; ")
+        x = i_str.split("; ")
         return x
 
 
@@ -42,19 +41,46 @@ def purge_bot_words(tokens):
     return res
 
 
-# matplotlib.interactive(False)
+full_vocab = [set(vocab.fds_gatekeeping),
+              set(vocab.fds_misandry),
+              set(vocab.fds_advanced_date_theory),
+              set(vocab.blackpill_racism),
+              set(vocab.blackpill_cope),
+              set(vocab.blackpill_rant),
+              set(vocab.blackpill_gatekeeping),
+              set(vocab.blackpill_gatekeeping),
+              set(vocab.blackpill_advanced_date_theory)]
 
-for sub in subs:
-    pdf = matplotlib.backends.backend_pdf.PdfPages(
-        sub + "_frequence_output.pdf")
+full_vocab = set.union(*full_vocab)
+
+
+# matplotlib.interactive(False)
+# this script has a bad runtime due to all the operations with words
+# so it is a good idea to run 3 isntances of this script for every subreddit at the same time
+
+# for (_, sub) in constants.subreddits:
+#    ("TheRedPill", "trp")
+#    ("FemaleDatingStrategy", "fds")
+for (_, sub) in [("BlackPillScience", "bps")]:
+    print("Calculating word frequence for ", sub)
+
     glob_tokens = []
+
+    sub_advanced_date_theory = []
+    sub_gatekeeping = []
+    sub_full = []
+    sub_signature = []
+    #sw_bps = "chad"
+    #sw_fds = "lvm"
 
     for y in constants.years_asc:
         for m in constants.months:
             tokens = []
-            for (c, offset) in [("comments", 2), ("posts", 3)]:
+            for c in ["comments", "posts"]:
                 inf = sub + "_data/" + sub + "_" + c + "-" + \
-                    str(y) + "-" + str(m) + "-tokenized.csv"
+                    str(y) + "-" + str(m) + "-lemmetized.csv"
+
+                print("Generating word frequency output for ", inf)
 
                 if os.path.exists(inf):
                     file = open(inf)
@@ -63,6 +89,11 @@ for sub in subs:
                     for row in csv_reader:
                         # print(row)
                         s = row["body"]
+
+                        if c == "posts":
+                            l = row["title"]
+                            s = s + "; " + l
+
                         # print("1:")
                         # print(s)
                         v = string_to_arr(s)
@@ -71,17 +102,50 @@ for sub in subs:
 
                         _tokens = purge_bot_words(v)
                         # print("3:")
-                        # print(_tokens)
 
                         tokens = tokens + _tokens
+                        # print(row["body"] + " -> ", v, " -> ", tokens)
                 # else:
                     # print(inf + " does not exist")
 
                     # print(tokens)
                     # tokens = freq_dist(tokens)
 
-            globa_tokens = tokens + glob_tokens
+            glob_tokens = tokens + glob_tokens
+            # print(tokens)
             fdist = nltk.FreqDist(tokens)
+            wcount = len(tokens)
+
+            # Percentage of keywords this month, at to a vector to plot it later
+            advanced_date_theory_percentage = 0.0
+            gatekeeping_percentage = 0.0
+            full_percentage = 0.0
+            signature_percentage = 0.0
+
+            for (word, frequency) in fdist.items():
+                freq = float(frequency)/float(wcount)
+                if sub == "fds" and word in vocab.fds_gatekeeping:
+                    gatekeeping_percentage += freq
+                if sub == "bps" and word in vocab.blackpill_gatekeeping:
+                    gatekeeping_percentage += freq
+                if sub == "fds" and word in vocab.fds_advanced_date_theory:
+                    advanced_date_theory_percentage += freq
+                if sub == "bps" and word in vocab.blackpill_advanced_date_theory:
+                    advanced_date_theory_percentage += freq
+                if word in full_vocab:
+                    full_percentage += freq
+                if word == "lvm" and sub == "fds":
+                    signature_percentage += freq
+                if word == "chad" and sub == "bps":
+                    signature_percentage += freq
+
+            sub_gatekeeping.append(gatekeeping_percentage)
+            sub_advanced_date_theory.append(advanced_date_theory_percentage)
+            sub_full.append(full_percentage)
+            sub_signature.append(signature_percentage)
+
+            # print(u'{};{}'.format(word, float(frequency)/float(wcount)))
+            # print(fdist['lvm'])
 
             matplotlib.interactive(False)
             # plt.ion()
@@ -93,7 +157,7 @@ for sub in subs:
             inf = sub + "_data/" + sub + "-" + \
                 str(y) + "-" + str(m)
             plt.savefig(inf + ".png")
-            pdf.savefig(fig)
+            # pdf.savefig(fig)
             # plt.ioff()
             plt.close()
 
@@ -101,9 +165,29 @@ for sub in subs:
 
     fig = plt.figure()
     tit = "Most common words of " + sub
-    fdist.plot(40, title=tit, cumulative=False,
-               show=False, percents=True)
+    glob_fdist = nltk.FreqDist(glob_tokens)
+    glob_fdist.plot(40, title=tit, cumulative=False,
+                    show=False, percents=True)
     inf = sub + "_data/" + sub
     plt.savefig(inf + ".png")
-    pdf.savefig(fig)
+
+    fig = plt.figure()
+
+    ids = np.array(
+        list(range(0, len(constants.months) * len(constants.years))))
+
+    adt_percentage = np.array(sub_advanced_date_theory)
+    g_percentage = np.array(sub_gatekeeping)
+    f_percentage = np.array(sub_full)
+    sig_percentage = np.array(sub_signature)
+
+    plt.plot(ids, adt_percentage, label="advanced date theory vocab percentage")
+    plt.plot(ids, g_percentage, label="gatekeeping vocab percentage")
+    plt.plot(ids, f_percentage, label="hateful vocab percentage")
+    plt.plot(ids, sig_percentage, label="signature word percentage")
+    plt.legend()
+    tit = "Terminology percentage of " + sub
+    inf = sub + "_data/terminology-" + sub
+    plt.savefig(inf + ".png")
+    # pdf.savefig(fig)
     plt.close()

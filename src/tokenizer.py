@@ -1,13 +1,10 @@
 import os
-import sys
 import csv
 import nltk
 import re
 
-from numpy import short
 import vocab
 import constants
-from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 from enum import Enum
@@ -180,7 +177,7 @@ def tokenize_and_lemmetize(filepath, body_offsets, outputfile, op):
 
                     no_stop_words = [w for w in tt if not w in stop_words]
                     negate(no_stop_words)
-                    tt = clear_len_3(tt)
+                    tt = clear_len_3(no_stop_words)
 
                     if op == Operation.lemmatize:
                         lemmetized = lemmetize(tt)

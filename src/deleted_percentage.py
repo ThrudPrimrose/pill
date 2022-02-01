@@ -1,4 +1,3 @@
-from csv import DictReader
 import constants
 import os.path
 import matplotlib.pyplot as plt
@@ -58,6 +57,7 @@ c_dels = []
 
 for (sub, subreddit_short) in constants.subreddits:
     # reset global variables before continuing with new subreddits
+
     p_dels = []
     c_dels = []
     p_del_acc = 0

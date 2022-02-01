@@ -74,7 +74,9 @@ blackpill_gatekeeping = {
     "volcel",
     "justshower",
     "fakecel",
-    "mentalcel"
+    "mentalcel",
+    "bluepill",
+    "bluepilled"
 }
 
 blackpill_rant = {
@@ -133,5 +135,12 @@ fds_misandry = {
 fds_gatekeeping = {
     "pickme",
     "nlog",
-    "queen"
+    "queen",
+    "gaslighting",
+    "gaslight",
+    "vet",
+    "vetting",
+    "vetting"
+    "groom",
+    "grooming"
 }
