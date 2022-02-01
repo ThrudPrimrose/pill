@@ -139,6 +139,10 @@ class Operation(Enum):
     stemming = 2
 
 
+words_to_remove = ["http", "https", "image", "access", "well",
+                   "deleted", "removed", "remove", "delete", "also", "even"]
+
+
 def tokenize_and_lemmetize(filepath, body_offsets, outputfile, op):
     if os.path.exists(filepath):
         file = open(filepath)
@@ -175,7 +179,8 @@ def tokenize_and_lemmetize(filepath, body_offsets, outputfile, op):
                     tt = alias_mapper(raw_tokens)
                     tt = clear_len_1(tt)
 
-                    no_stop_words = [w for w in tt if not w in stop_words]
+                    no_stop_words = [
+                        w for w in tt if not w in stop_words and not w in words_to_remove]
                     negate(no_stop_words)
                     tt = clear_len_3(no_stop_words)
 

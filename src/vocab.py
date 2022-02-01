@@ -76,7 +76,9 @@ blackpill_gatekeeping = {
     "fakecel",
     "mentalcel",
     "bluepill",
-    "bluepilled"
+    "bluepilled",
+    "female",
+    "females"
 }
 
 blackpill_rant = {

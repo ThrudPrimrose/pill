@@ -60,8 +60,8 @@ full_vocab = set.union(*full_vocab)
 
 # for (_, sub) in constants.subreddits:
 #    ("TheRedPill", "trp")
-#    ("FemaleDatingStrategy", "fds")
-for (_, sub) in [("BlackPillScience", "bps")]:
+#    ("FemaleDatingStrategy", "fds")("BlackPillScience", "bps")
+for (_, sub) in [("FemaleDatingStrategy", "fds")]:
     print("Calculating word frequence for ", sub)
 
     glob_tokens = []
@@ -156,7 +156,7 @@ for (_, sub) in [("BlackPillScience", "bps")]:
                        show=False, percents=True)
             inf = sub + "_data/" + sub + "-" + \
                 str(y) + "-" + str(m)
-            plt.savefig(inf + ".png")
+            plt.savefig(inf + ".pdf")
             # pdf.savefig(fig)
             # plt.ioff()
             plt.close()
@@ -169,7 +169,7 @@ for (_, sub) in [("BlackPillScience", "bps")]:
     glob_fdist.plot(40, title=tit, cumulative=False,
                     show=False, percents=True)
     inf = sub + "_data/" + sub
-    plt.savefig(inf + ".png")
+    plt.savefig(inf + ".pdf")
 
     fig = plt.figure()
 
@@ -188,6 +188,6 @@ for (_, sub) in [("BlackPillScience", "bps")]:
     plt.legend()
     tit = "Terminology percentage of " + sub
     inf = sub + "_data/terminology-" + sub
-    plt.savefig(inf + ".png")
+    plt.savefig(inf + ".pdf")
     # pdf.savefig(fig)
     plt.close()
