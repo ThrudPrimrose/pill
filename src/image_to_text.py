@@ -1,53 +1,40 @@
 import pytesseract
-from PIL import Image, ImageEnhance, ImageFilter
-import csv
+from PIL import Image
 import pandas as pd
-from csv import writer
 import glob
-
-def preprocess_image(img):
-    img = img.convert('RGBA')
-    print('Im in 2')
-    pix = img.load()
-    print('Im in 3')
-    for y in range(img.size[1]):
-        print('Im in 4')
-        for x in range(img.size[0]):
-            print('Im in 5')
-            if pix[x, y][0] < 102 or pix[x, y][1] < 102 or pix[x, y][2] < 102:
-                print('Im in 6')
-                pix[x, y] = (0, 0, 0, 255)
-                print('Im in 7')
-            else:
-                pix[x, y] = (255, 255, 255, 255)
-                print('Im in 8')
-    img = img.filter(ImageFilter.MedianFilter())
-    enhancer = ImageEnhance.Contrast(img)
-    img = enhancer.enhance(2)
-    img = img.convert('1')
-    img.save('temp2.jpg')
-    text = pytesseract.image_to_string(Image.open('temp2.jpg'))
-    return text
-
-#doesnt work quite right
-path = r"/Users/sezinoztufek/Desktop/data_with_images/to/dir/*.csv"
-print('Hey')
+import cv2
+import numpy as np
+#change path name (leave /*.csv) to where the data is at 
+path = "/Users/sezinoztufek/Desktop/data_with_images/*.csv"
+counter = 1
+#reads all the files inside a folder
 for file in glob.glob(path):
     df = pd.read_csv(file)
+    #creating a new column
     df["image description"] = ""
+    #iterating through the individual files
     for index, row in df.iterrows():
+        #if row has an image:
         if row['image'] != -1:
-            print('heyhey')
-            image_number_path = '/Users/sezinoztufek/Desktop/data_with_images/images/' + \
-            str(row['image']) + '.jpg'
+            #change path name (leave  + str(row['image']) + '.jpg') to where your images are at
+            image_number_path = '/Users/sezinoztufek/Desktop/data_with_images/images/' + str(row['image']) + '.jpg'
             try:
-                myImage = Image.open(image_number_path)
-                print('Im in 1')
+                #if the image exists in the folder the process will continue
+                Image.open(image_number_path)
             except:
                 print('Image does not exist')
             else:
-                description = preprocess_image(myImage)
-                print(description)
-                row['image description'] = description
-
-    df.to_csv(r'/Users/sezinoztufek/Desktop/changed files.csv', index=False)
+                myImage = cv2.imread(image_number_path)
+                #if cv2 can not read it 
+                if np.shape(myImage) == (): 
+                    print('Image did not work')
+                else:
+                    #thresholding using opencv, binary thresholding to preprocess the images
+                    img = cv2.cvtColor(myImage, cv2.COLOR_BGR2GRAY)
+                    ret, thresh = cv2.threshold(img, 120, 255, cv2.THRESH_BINARY)
+                    description = pytesseract.image_to_string(thresh)
+                    # adding the image description to the given row
+                    df.loc[index, 'image description'] = description
+    #change path to save updated data frame to wherever you want to
+    df.to_csv(r'/Users/sezinoztufek/Desktop/changed_files' + str(counter) + '.csv', index=False)
+    counter += 1
