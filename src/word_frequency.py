@@ -61,7 +61,7 @@ full_vocab = set.union(*full_vocab)
 # for (_, sub) in constants.subreddits:
 #    ("TheRedPill", "trp")
 #    ("FemaleDatingStrategy", "fds")("BlackPillScience", "bps")
-for (_, sub) in [("FemaleDatingStrategy", "fds")]:
+for (_, sub) in [("TheRedPill", "trp")]:
     print("Calculating word frequence for ", sub)
 
     glob_tokens = []

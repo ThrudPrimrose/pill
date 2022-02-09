@@ -2,7 +2,20 @@ aliases_11 = {
     "st.blackops2cel": "blackops2cel",
     "pick-me": "pickme",
     "pickmeism": "pickme",
-    "cesspit": "cesspool"
+    "cesspit": "cesspool",
+    "maxxing": "maxing",
+    "gymmaxxing": "gymmaxing",
+    "gymmaxxxing": "gymmaxing",
+    "gymmaxxxxing": "gymmaxing",
+    "gymaxxing": "gymmaxing",
+    "gymaxxxing": "gymmaxing",
+    "gymaxxxxing": "gymmaxing",
+    "looksmaxxing": "looksmaxing",
+    "looksmaxxxing": "looksmaxing",
+    "statusmaxxing": "statusmaxing",
+    "statusmaxxxing": "statusmaxing",
+    "statusmaxx": "statusmaxing",
+    "statusmaxxx": "statusmaxing",
 }
 
 aliases_21 = {
@@ -15,7 +28,17 @@ aliases_21 = {
     "level up": "lu",
     "level down": "ld",
     "low value": "lv",
-    "low effort": "le"
+    "low effort": "le",
+    "alpha male": "alpha-male",
+    "alt right": "alt-right",
+    "beta orbiter": "betaorbiter",
+    "cock carousel": "carousel",
+    "sexual marketplace": "sm",
+    "alpha widow": "aw",
+    "apex fallacy": "apexfallacy",
+    "nice guy": "niceguy",
+    "bad boy": "badboy",
+    "silver bullet": "silverbullet"
 }
 
 aliases_31 = {
@@ -35,7 +58,15 @@ aliases_31 = {
     "sexual market value": "smv",
     "just be white": "jbw",
     "splitting the bill": "stb",
-    "split the bill": "stb"
+    "split the bill": "stb",
+    "average frustrated chump": "afc",
+    "pick up artist": "pua",
+    "men right activist": "mra",
+    "demonstration high value": "dhv",
+    "demonstration low value": "dlv",
+    "average frustrated chump": "afc",
+    "no one cares": "noc",
+    "sexual market value": "smv"
 }
 
 aliases_41 = {
@@ -45,13 +76,93 @@ aliases_41 = {
     "alpha male of group": "amog",
     "all men are rapists": "rapist",
     "not like other girls": "nlog",
+    "alpha male of the group": "amog",
+    "men s rights activist": "mra",
+    "demonstration of high value": "dhv",
+    "demonstration of low value": "dlv",
+    "alpha fucs beta bucks": "afbb",
+    "alpha fux beta bucx": "afbb"
+}
+
+trp_gatekeeping = {
+    "bluepilled",
+    "bluepill",
+    "meek",
+    "meeks",
+    "mentalcel",
+    "mentalcel",
+    "awalt",
+    "amog",
+    "bot",
+    "sjw",
+    "feminist",
+    "feminazi",
+    "soy",
+    "soyboy"
+}
+
+trp_misagony = {
+    "carousel",
+    "meeks",
+    "meek",
+    "alphawidow",
+    "femcel",
+    "stacy",
+    "becky",
+    "femoid",
+    "fiona",
+    "hamster",
+    "roastie",
+    "fuckable",
+    "pussy",
+    "chameleon"
+}
+
+trp_advanced_date_theory = {
+    "frame",
+    "hypergamy",
+    "game",
+    "pua",
+    "lookism",
+    "betaorbiter",
+    "looksmaxing",
+    "alpha",
+    "beta",
+    "sigma",
+    "gamma",
+    "dhv",
+    "dlv",
+    "amog",
+    "afbb",
+    "alphawidow",
+    "apexfallacy",
+    "briffault",
+    "triad",
+    "heightcel",
+    "cuck",
+    "sm",
+    "friedzone",
+    "misandry",
+    "neg",
+    "negging",
+    "niceguy",
+    "omega",
+    "hierarchy",
+    "orbiter",
+    "purple",
+    "wall",
+    "badboy",
+    "rollercoaster",
+    "plates",
+    "noc",
+    "smv",
+    "silverbullet"
 }
 
 blackpill_advanced_date_theory = {
     "awalt",
     "beta",
     "alpha",
-    "cuck",
     "betabuxx",
     "smv",
     "blackops2cel",
@@ -62,9 +173,26 @@ blackpill_advanced_date_theory = {
     "hypergamy",
     "looksmatch",
     "meeks",
+    "meek",
     "mentalcel",
     "wristcel",
-    "divorcerape"
+    "divorcerape",
+    "chad",
+    "lookism",
+    "betaorbiter",
+    "chadfishing",
+    "gymmaxing",
+    "sm",
+    "statusmaxing",
+    "heightcel",
+    "noncel",
+    "volcel",
+    "cuckold",
+    "cuck",
+    "excitement",
+    "noc",
+    "overvaluation",
+    "smv"
 }
 
 blackpill_gatekeeping = {
@@ -78,7 +206,23 @@ blackpill_gatekeeping = {
     "bluepill",
     "bluepilled",
     "female",
-    "females"
+    "females",
+    "femoid",
+    "stacy",
+    "betaorbiter",
+    "halo",
+    "heightcel",
+    "noncel"
+}
+
+blackpill_misogyny = {
+    "femoid",
+    "foid",
+    "hypergamy",
+    "stacy",
+    "carousel",
+    "dogpill",
+    "landwhale"
 }
 
 blackpill_rant = {
@@ -89,7 +233,14 @@ blackpill_rant = {
     "friendless",
     "virgin",
     "ldar",
-    "mog"
+    "mog",
+    "ascend",
+    "mra",
+    "ragefuel",
+    "suifuel",
+    "heightcel",
+    "zeta",
+    "shortcel"
 }
 
 blackpill_cope = {
@@ -97,7 +248,12 @@ blackpill_cope = {
     "gymcel",
     "sui",
     "suicide",
-    "cope"
+    "cope",
+    "lifefuel",
+    "based",
+    "jfl",
+    "ascend",
+    "wizard"
 }
 
 blackpill_racism = {
@@ -106,7 +262,9 @@ blackpill_racism = {
     "chang",
     "jamal",
     "currycel",
-    "jbw"
+    "jbw",
+    "chaddam",
+    "chadpreet"
 }
 
 fds_advanced_date_theory = {
@@ -123,7 +281,8 @@ fds_advanced_date_theory = {
     "lu",
     "grooming",
     "groom",
-    "vet"
+    "vet",
+    "vetting"
 }
 
 fds_misandry = {
