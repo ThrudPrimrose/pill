@@ -48,8 +48,11 @@ full_vocab = [set(vocab.fds_gatekeeping),
               set(vocab.blackpill_cope),
               set(vocab.blackpill_rant),
               set(vocab.blackpill_gatekeeping),
-              set(vocab.blackpill_gatekeeping),
-              set(vocab.blackpill_advanced_date_theory)]
+              set(vocab.blackpill_misogyny),
+              set(vocab.blackpill_advanced_date_theory),
+              set(vocab.trp_gatekeeping),
+              set(vocab.trp_advanced_date_theory),
+              set(vocab.trp_misagony)]
 
 full_vocab = set.union(*full_vocab)
 
@@ -61,7 +64,7 @@ full_vocab = set.union(*full_vocab)
 # for (_, sub) in constants.subreddits:
 #    ("TheRedPill", "trp")
 #    ("FemaleDatingStrategy", "fds")("BlackPillScience", "bps")
-for (_, sub) in [("TheRedPill", "trp")]:
+for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDatingStrategy", "fds")]:
     print("Calculating word frequence for ", sub)
 
     glob_tokens = []
@@ -70,6 +73,7 @@ for (_, sub) in [("TheRedPill", "trp")]:
     sub_gatekeeping = []
     sub_full = []
     sub_signature = []
+    sub_cope = []
     #sw_bps = "chad"
     #sw_fds = "lvm"
 
@@ -121,6 +125,7 @@ for (_, sub) in [("TheRedPill", "trp")]:
             gatekeeping_percentage = 0.0
             full_percentage = 0.0
             signature_percentage = 0.0
+            cope_percentage = 0.0
 
             for (word, frequency) in fdist.items():
                 freq = float(frequency)/float(wcount)
@@ -132,17 +137,26 @@ for (_, sub) in [("TheRedPill", "trp")]:
                     advanced_date_theory_percentage += freq
                 if sub == "bps" and word in vocab.blackpill_advanced_date_theory:
                     advanced_date_theory_percentage += freq
+                if sub == "trp" and word in vocab.trp_gatekeeping:
+                    gatekeeping_percentage += freq
+                if sub == "trp" and word in vocab.trp_advanced_date_theory:
+                    advanced_date_theory_percentage += freq
                 if word in full_vocab:
                     full_percentage += freq
                 if word == "lvm" and sub == "fds":
                     signature_percentage += freq
                 if word == "chad" and sub == "bps":
                     signature_percentage += freq
+                if sub == "bps" and (word in vocab.blackpill_cope or word in vocab.blackpill_rant):
+                    cope_percentage += freq
 
             sub_gatekeeping.append(gatekeeping_percentage)
             sub_advanced_date_theory.append(advanced_date_theory_percentage)
             sub_full.append(full_percentage)
             sub_signature.append(signature_percentage)
+
+            if sub == "bps":
+                sub_cope.append(cope_percentage)
 
             # print(u'{};{}'.format(word, float(frequency)/float(wcount)))
             # print(fdist['lvm'])
@@ -185,6 +199,9 @@ for (_, sub) in [("TheRedPill", "trp")]:
     plt.plot(ids, g_percentage, label="gatekeeping vocab percentage")
     plt.plot(ids, f_percentage, label="hateful vocab percentage")
     plt.plot(ids, sig_percentage, label="signature word percentage")
+    if sub == "bps":
+        cpp = np.array(sub_cope)
+        plt.plot(ids, cpp, label="cope")
     plt.legend()
     tit = "Terminology percentage of " + sub
     inf = sub + "_data/terminology-" + sub

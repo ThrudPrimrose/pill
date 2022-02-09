@@ -38,7 +38,10 @@ aliases_21 = {
     "apex fallacy": "apexfallacy",
     "nice guy": "niceguy",
     "bad boy": "badboy",
-    "silver bullet": "silverbullet"
+    "silver bullet": "silverbullet",
+    "weed out": "weedout",
+    "gray rocking": "grayrocking",
+    "bread crumbing": "breadcrumbing"
 }
 
 aliases_31 = {
@@ -66,7 +69,11 @@ aliases_31 = {
     "demonstration low value": "dlv",
     "average frustrated chump": "afc",
     "no one cares": "noc",
-    "sexual market value": "smv"
+    "sexual market value": "smv",
+    "big dick energy": "bde",
+    "small dick energy": "sme",
+    "zero value male": "zvm",
+    "red pill woman": "rpw"
 }
 
 aliases_41 = {
@@ -115,7 +122,8 @@ trp_misagony = {
     "roastie",
     "fuckable",
     "pussy",
-    "chameleon"
+    "chameleon",
+    "plate"
 }
 
 trp_advanced_date_theory = {
@@ -156,7 +164,9 @@ trp_advanced_date_theory = {
     "plates",
     "noc",
     "smv",
-    "silverbullet"
+    "silverbullet",
+    "bde",
+    "plate"
 }
 
 blackpill_advanced_date_theory = {
@@ -192,7 +202,8 @@ blackpill_advanced_date_theory = {
     "excitement",
     "noc",
     "overvaluation",
-    "smv"
+    "smv",
+    "sme"
 }
 
 blackpill_gatekeeping = {
@@ -273,6 +284,7 @@ fds_advanced_date_theory = {
     "hvw",
     "lvw",
     "nvm",
+    "zvm",
     "pickmeisha",
     "splitting",
     "stb",
@@ -282,7 +294,12 @@ fds_advanced_date_theory = {
     "grooming",
     "groom",
     "vet",
-    "vetting"
+    "vetting",
+    "weedout",
+    "grayrocking",
+    "bde",
+    "breadcrumbing",
+    "sme"
 }
 
 fds_misandry = {
@@ -290,7 +307,10 @@ fds_misandry = {
     "rapist",
     "gaslighting",
     "gaslight",
-    "scrote"
+    "scrote",
+    "bde",
+    "scrotation",
+    "dickhead"
 }
 
 fds_gatekeeping = {
@@ -303,5 +323,14 @@ fds_gatekeeping = {
     "vetting",
     "vetting"
     "groom",
-    "grooming"
+    "grooming",
+    "coddling",
+    "mask",
+    "audacity",
+    "bangmaid",
+    "bitch",
+    "cockholm",
+    "pick",
+    "sme",
+    "rpw"
 }
