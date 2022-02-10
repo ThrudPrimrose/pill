@@ -129,6 +129,16 @@ def activity_over_months(subreddit_short):
         else:
             yavg[i] = float((float(yavg[i]) + 0.5) / float(user_at[i]))
 
+    for i in range(0, len(constants.years_asc) * len(constants.months)):
+        if i > 0 and i < len(constants.years_asc) * len(constants.months) - 1:
+            if yavg[i] == 0:
+                if yavg[i-1] == 0 and yavg[i+1] != 0:
+                    yavg[i] = yavg[i+1]
+                elif yavg[i+1] == 0 and yavg[i-1] != 0:
+                    yavg[i] = yavg[i-1]
+                elif yavg[i+1] != 0 and yavg[i-1] != 0:
+                    yavg[i] = float(yavg[i-1] + yavg[i+1])/2.0
+
     # print(yavg)
     # (u, v) = max(vector, key=lambda item: item[1])
     # print(u, " ", v)

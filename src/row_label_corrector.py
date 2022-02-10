@@ -2,7 +2,8 @@ import os
 import sys
 import fileinput
 import constants
-shorts = ["fds", "bps", "trp"]
+
+shorts = ["fds", "bps", "trp", "mr", "pp"]
 
 
 def replaceAll(file, searchExp, replaceExp):

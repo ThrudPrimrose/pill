@@ -239,7 +239,9 @@ bps_gatekeeping = {
     "jby",
     "knight",
     "bloop",
-    "blooper"
+    "blooper",
+    "beta",
+    "betabuxx"
 }
 
 blackpill_misogyny = {
@@ -282,7 +284,10 @@ blackpill_cope = {
     "jfl",
     "ascend",
     "wizard",
-    "jby"
+    "jby",
+    "gymmaxing",
+    "looksmaxing",
+    "statusmaxing"
 }
 
 blackpill_racism = {
@@ -317,7 +322,8 @@ fds_advanced_date_theory = {
     "grayrocking",
     "bde",
     "breadcrumbing",
-    "sme"
+    "sme",
+    "grayrocking"
 }
 
 fds_misandry = {
