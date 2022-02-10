@@ -45,3 +45,9 @@ python3 src/user_activity_over_months.py
 ```bash
 python3 src/word_frequency.py
 ```
+5. Possible gatekeeping posts per sub. For this user needs to first analyze texts of images, which will be
+be done through a call to image_to_text.py then the tokenizer needs to be changed to use files that have "-img.csv" as an
+ending after those files are created user can check for the amount of possible unique gatekeeping posts by
+```bash
+python3 src/gatekeep_detector.py
+```
