@@ -47,6 +47,13 @@ def residual_decay_exp(params, x, data):
     return data-model
 
 
+def resi(fun, xs, ys):
+    acc = 0.0
+    for (x, y) in (xs, ys):
+        acc += abs(fun(x) - y)
+    return acc
+
+
 def activity_over_months(subreddit_short):
 
     # vector of dictionaries
@@ -161,7 +168,9 @@ def activity_over_months(subreddit_short):
         fit_linear_ols = np.polyfit(npx, npyavg, i)
         poly = np.poly1d(fit_linear_ols)
         poly_y = poly(npx)
-        ax[0].plot(npx, poly_y, label="OLS "+str(i))
+        resi = poly_y - npyavg
+        s = np.sum(np.absolute(resi))
+        ax[0].plot(npx, poly_y, label="OLS "+str(i) + " " + "{:.2f}".format(s))
 
     ax[0].legend()
     ax[0].set_title('OLS with polynomials of various degrees')
@@ -184,9 +193,18 @@ def activity_over_months(subreddit_short):
         a, params): return params.x[0] * exp(- exp(params.x[1] - params.x[2]*a))
 
     ax[1].plot(npx, npyavg, label="avg")
-    ax[1].plot(npx, gompertz_fit(npx, out_lin), label="gompertz lin")
-    ax[1].plot(npx, gompertz_fit(npx, out), label="gompertz soft_l1")
-    ax[1].plot(npx, gompertz_fit(npx, out_ch), label="gompertz cauchy")
+    resi = gompertz_fit(npx, out_lin) - npyavg
+    s = np.sum(np.absolute(resi))
+    ax[1].plot(npx, gompertz_fit(npx, out_lin),
+               label="gompertz lin " + "{:.2f}".format(s))
+    resi = gompertz_fit(npx, out) - npyavg
+    s = np.sum(np.absolute(resi))
+    ax[1].plot(npx, gompertz_fit(npx, out),
+               label="gompertz soft_l1 " + "{:.2f}".format(s))
+    resi = gompertz_fit(npx, out_ch) - npyavg
+    s = np.sum(np.absolute(resi))
+    ax[1].plot(npx, gompertz_fit(npx, out_ch),
+               label="gompertz cauchy " + "{:.2f}".format(s))
     ax[1].legend()
     ax[1].set_title('OLS with gompertz function and various loss functions')
     ax[1].set_xlabel('month, starting from ' +
@@ -198,11 +216,15 @@ def activity_over_months(subreddit_short):
     def log_output(x, param): return param[0] * np.log(x) + param[1]
 
     ax[2].plot(npx + 1, npyavg, label="avg")
-    ax[2].plot(npx + 1, log_output(npx + 1, out_log), label="log")
+    resi = log_output(npx + 1, out_log) - npyavg
+    s = np.sum(np.absolute(resi))
+    ax[2].plot(npx + 1, log_output(npx + 1, out_log),
+               label="log " + "{:.2f}".format(s))
     ax[2].set_xlabel('month, starting from ' +
                      str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
     ax[2].set_ylabel('avg number of post + comment per user')
     ax[2].set_title('OLS with log transformation on x')
+    ax[2].legend()
     # print(out_log)
 
     # max_el_y = max(npyavg)
@@ -230,13 +252,21 @@ def activity_over_months(subreddit_short):
         a, params): return params.x[0] * exp(params.x[1]*a)
 
     ax[3].plot(npx, npyavg, label="avg")
-    ax[3].plot(x_left, gompertz_fit(x_left, growth), label="growth(gompertz)")
-    ax[3].plot(x_right, decay_exp_fit(x_right, decay_exp), label="decay(exp)")
+    resi = gompertz_fit(x_left, growth) - y_left
+    s = np.sum(np.absolute(resi))
+    ax[3].plot(x_left, gompertz_fit(x_left, growth),
+               label="growth(gompertz) " + "{:.2f}".format(s))
+    resi = decay_exp_fit(x_right, decay_exp) - y_right
+    s = np.sum(np.absolute(resi))
+    ax[3].plot(x_right, decay_exp_fit(x_right, decay_exp),
+               label="decay(exp) " + "{:.2f}".format(s))
 
     decay_lin = np.polyfit(x_right, y_right, 1)
     poly = np.poly1d(decay_lin)
     poly_y = poly(x_right)
-    ax[3].plot(x_right, poly_y, label="OLS 1")
+    resi = poly_y - y_right
+    s = np.sum(np.absolute(resi))
+    ax[3].plot(x_right, poly_y, label="OLS 1 " + "{:.2f}".format(s))
 
     ax[3].legend()
     ax[3].set_xlabel('month, starting from ' +
