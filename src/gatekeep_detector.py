@@ -16,6 +16,7 @@ for (_, short) in constants.subreddits:
 
     for y in constants.years:
         for m in constants.months:
+            total = 0
             gatekeeping_counter = 0
             #p_path = utility.get_post_path(short, y, m)
             p_path = utility.get_appended_path(
@@ -24,6 +25,7 @@ for (_, short) in constants.subreddits:
             if os.path.exists(p_path):
                 df = pd.read_csv(p_path)
                 for index, row in df.iterrows():
+                    total += 1
                     if row['image'] != -1:
                         image_description = str(row["image description"]).split(
                             '; ')
@@ -41,7 +43,7 @@ for (_, short) in constants.subreddits:
 
                             if word in arr:
                                 gatekeeping_counter += 1
-                            break
+                                break
                     else:
                         body = str(row['body']).split('; ')
                         title = str(row['title']).split('; ')
@@ -61,7 +63,8 @@ for (_, short) in constants.subreddits:
                                     gatekeeping_counter += 1
                                     break
 
-            gatekeeping_possible_posts.append(gatekeeping_counter)
+            gatekeeping_possible_posts.append(
+                float(gatekeeping_counter)/float(max(total, 1)))
 
     print(gatekeeping_possible_posts)
 
