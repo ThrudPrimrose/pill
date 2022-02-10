@@ -41,7 +41,10 @@ aliases_21 = {
     "silver bullet": "silverbullet",
     "weed out": "weedout",
     "gray rocking": "grayrocking",
-    "bread crumbing": "breadcrumbing"
+    "bread crumbing": "breadcrumbing",
+    "double standard": "doublestandard",
+    "relationship marketplace": "rmp",
+    "shit test": "shittest"
 }
 
 aliases_31 = {
@@ -69,11 +72,12 @@ aliases_31 = {
     "demonstration low value": "dlv",
     "average frustrated chump": "afc",
     "no one cares": "noc",
-    "sexual market value": "smv",
     "big dick energy": "bde",
     "small dick energy": "sme",
     "zero value male": "zvm",
-    "red pill woman": "rpw"
+    "red pill woman": "rpw",
+    "just be yourself": "jby",
+    "relationship market place": "rmp"
 }
 
 aliases_41 = {
@@ -105,7 +109,12 @@ trp_gatekeeping = {
     "feminist",
     "feminazi",
     "soy",
-    "soyboy"
+    "soyboy",
+    "doublestandards",
+    "knight",
+    "bloop",
+    "blooper",
+    "twerp"
 }
 
 trp_misagony = {
@@ -166,7 +175,10 @@ trp_advanced_date_theory = {
     "smv",
     "silverbullet",
     "bde",
-    "plate"
+    "plate",
+    "rmp",
+    "shittest",
+    "solipsm"
 }
 
 blackpill_advanced_date_theory = {
@@ -223,7 +235,11 @@ blackpill_gatekeeping = {
     "betaorbiter",
     "halo",
     "heightcel",
-    "noncel"
+    "noncel",
+    "jby",
+    "knight",
+    "bloop",
+    "blooper"
 }
 
 blackpill_misogyny = {
@@ -251,7 +267,8 @@ blackpill_rant = {
     "suifuel",
     "heightcel",
     "zeta",
-    "shortcel"
+    "shortcel",
+    "jby"
 }
 
 blackpill_cope = {
@@ -264,7 +281,8 @@ blackpill_cope = {
     "based",
     "jfl",
     "ascend",
-    "wizard"
+    "wizard",
+    "jby"
 }
 
 blackpill_racism = {
