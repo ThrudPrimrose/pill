@@ -16,9 +16,9 @@ def replaceAll(file, searchExp, replaceExp):
 for y in constants.years_asc:
     for m in constants.months:
         for (_, s) in constants.subreddits:
-            infp = s + "_data/" + s + "_posts" + \
+            infp = "data/" + s + "_data/" + s + "_posts" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
-            infc = s + "_data/" + s + "_comments" + \
+            infc = "data/" + s + "_data/" + s + "_comments" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
             replaceAll(infp, "post_id,author,title,upvotes,body,image",
                        "post_id,author,title,body,image")

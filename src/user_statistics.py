@@ -5,6 +5,7 @@ import os.path
 from pmaw import PushshiftAPI
 import datetime as dt
 import matplotlib.pyplot as plt
+import utility
 
 
 def gen_user_stats(sub, subreddit_short):
@@ -31,13 +32,9 @@ def gen_user_stats(sub, subreddit_short):
 
     for y in constants.years_asc:
         for m in constants.months:
-            filepath_posts = subreddit_short + "_data/" + \
-                str(subreddit_short) + "_" + "posts" + \
-                "-" + str(y) + "-" + str(m) + ".csv"
+            filepath_posts = utility.get_post_path(subreddit_short, y, m)
 
-            filepath_comments = subreddit_short + "_data/" + \
-                str(subreddit_short) + "_" + "comments" + \
-                "-" + str(y) + "-" + str(m) + ".csv"
+            filepath_comments = utility.get_comment_path(subreddit_short, y, m)
 
             if os.path.isfile(filepath_comments) and os.path.isfile(filepath_posts):
                 unique_active_users = find_unique_active_users(
@@ -59,7 +56,7 @@ def gen_user_stats(sub, subreddit_short):
         limit = 1
         total_users = []
 
-        fname = short + "_data/" + short + "_users.txt"
+        fname = "data/" + short + "_data/" + short + "_users.txt"
         if not os.path.isfile(fname):
             for y in constants.years_asc:
                 for m in constants.months:
@@ -181,13 +178,10 @@ def gen_user_stats(sub, subreddit_short):
 
         for y in constants.years_asc:
             for m in constants.months:
-                filepath_posts = subreddit_short + "_data/" + \
-                    str(subreddit_short) + "_" + "posts" + \
-                    "-" + str(y) + "-" + str(m) + ".csv"
+                filepath_posts = utility.get_post_path(subreddit_short, y, m)
 
-                filepath_comments = subreddit_short + "_data/" + \
-                    str(subreddit_short) + "_" + "comments" + \
-                    "-" + str(y) + "-" + str(m) + ".csv"
+                filepath_comments = utility.get_comment_path(
+                    subreddit_short, y, m)
 
                 if os.path.isfile(filepath_posts):
                     with open(filepath_posts, "r") as csv_file:

@@ -21,7 +21,7 @@ def pull_posts_from_subreddit(subreddit, short_name, begin, end, limit, suffix):
 
     # python considers . as the directory where the program is run so run the program
     # as python3 src/raw_collector.py and the data will be created in the right place
-    dirpath = short_name + "_data"
+    dirpath = "data/" + short_name + "_data"
     if not os.path.exists(dirpath):
         os.mkdir(dirpath)
 
@@ -87,7 +87,7 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
 
     # python considers . as the directory where the program is run so run the program
     # as python3 src/raw_collector.py and the data will be created in the right place
-    dirpath = short_name + "_data"
+    dirpath = "data/" + short_name + "_data"
     if not os.path.exists(dirpath):
         os.mkdir(dirpath)
 

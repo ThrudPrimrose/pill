@@ -173,17 +173,23 @@ def tokenize_and_lemmetize(filepath, body_offsets, outputfile, op):
 for (_, sub) in constants.subreddits:
     for y in constants.years_asc:
         for m in constants.months:
-            for (c, offset) in [("posts", (2, 3))]:
-                inf = sub + "_data/" + sub + "_" + c + \
-                    "-" + str(y) + "-" + str(m) + ".csv"
+            for (c, offset) in [("comments", (2,)), ("posts", (2, 3))]:
+                inf = ""
+                if c == "comments":
+                    utility.get_comment_path(sub, y, m)
+                else:
+                    utility.get_post_path(sub, y, m)
 
-                outf = sub + "_data/" + sub + "_" + c + "-" + \
-                    str(y) + "-" + str(m) + "-lemmetized.csv"
+                outf = ""
+                if c == "comments":
+                    utility.get_appended_path(sub, y, m, False, "lemmetized")
+                else:
+                    utility.get_appended_path(sub, y, m, True, "lemmetized")
 
                 print("Lemmetize: ", inf, " to ", outf)
                 tokenize_and_lemmetize(inf, offset, outf, Operation.lemmatize)
 
-                # outf = sub + "_data/" + sub + "_" + c + "-" + \
+                # outf = "data/" + sub + "_data/" + sub + "_" + c + "-" + \
                 #    str(y) + "-" + str(m) + "-stemmed.csv"
                 #print("Stem: ", inf, " to ", outf)
                 #tokenize_and_lemmetize(inf, offset, outf, Operation.stemming)

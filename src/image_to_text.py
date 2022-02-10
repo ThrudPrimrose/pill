@@ -10,7 +10,7 @@ import constants
 
 for short in ["trp", "fds", "bps"]:
 
-    path = short + "_data" + "/" + short + "_posts*.csv"
+    path = "data/" + short + "_data" + "/" + short + "_posts*.csv"
     counter = 1
     # reads all the files inside a folder
     for file in glob.glob(path):
@@ -26,7 +26,7 @@ for short in ["trp", "fds", "bps"]:
             # if row has an image:
             if row['image'] != -1:
                 # change path name (leave  + str(row['image']) + '.jpg') to where your images are at
-                image_number_path = short + "_data" + '/images/' + \
+                image_number_path = "data/" + short + "_data" + '/images/' + \
                     str(row['image']) + '.jpg'
                 # print(image_number_path)
                 try:

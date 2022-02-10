@@ -66,13 +66,9 @@ def activity_over_months(subreddit_short):
         for m in constants.months:
             footprint_dict = dict()
 
-            filepath_posts = subreddit_short + "_data/" + \
-                str(subreddit_short) + "_" + "posts" + \
-                "-" + str(y) + "-" + str(m) + ".csv"
+            filepath_posts = utility.get_post_path(subreddit_short, y, m)
 
-            filepath_comments = subreddit_short + "_data/" + \
-                str(subreddit_short) + "_" + "comments" + \
-                "-" + str(y) + "-" + str(m) + ".csv"
+            filepath_comments = utility.get_comment_path(subreddit_short, y, m)
 
             if os.path.exists(filepath_posts):
                 with open(filepath_posts, "r") as csv_file:

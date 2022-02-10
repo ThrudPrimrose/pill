@@ -83,7 +83,7 @@ for (_, sub) in constants.subreddits:
         for m in constants.months:
             tokens = []
             for c in ["posts"]:
-                inf = sub + "_data/" + sub + "_" + c + "-" + \
+                inf = "data/" + sub + "_data/" + sub + "_" + c + "-" + \
                     str(y) + "-" + str(m) + "-lemmetized.csv"
 
                 print("Generating word frequency output for ", inf)
@@ -187,7 +187,7 @@ for (_, sub) in constants.subreddits:
                 " on: " + str(y) + "." + str(m)
             fdist.plot(30, title=tit, cumulative=False,
                        show=False, percents=True)
-            inf = sub + "_data/" + sub + "-" + \
+            inf = "data" + sub + "_data/" + sub + "-" + \
                 str(y) + "-" + str(m)
             plt.savefig(inf + ".pdf")
             # pdf.savefig(fig)
@@ -201,7 +201,7 @@ for (_, sub) in constants.subreddits:
     glob_fdist = nltk.FreqDist(glob_tokens)
     glob_fdist.plot(40, title=tit, cumulative=False,
                     show=False, percents=True)
-    inf = sub + "_data/" + sub
+    inf = "data/" + sub + "_data/" + sub
     plt.savefig(inf + ".pdf")
 
     fig = plt.figure()
@@ -235,7 +235,7 @@ for (_, sub) in constants.subreddits:
         plt.plot(ids, cpp, label="racism")
     plt.legend()
     tit = "Terminology percentage of " + sub
-    inf = sub + "_data/terminology-" + sub
+    inf = "data/" + sub + "_data/terminology-" + sub
     plt.savefig(inf + ".pdf")
     # pdf.savefig(fig)
     plt.close()

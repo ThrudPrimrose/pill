@@ -59,3 +59,22 @@ def unzero_fields(arr):
                     arr[i] = arr[i-1]
                 elif arr[i+1] != 0 and arr[i-1] != 0:
                     arr[i] = float(arr[i-1] + arr[i+1])/2.0
+
+
+def get_comment_path(short, year, month):
+    return "data/" + short + "_data/" + short + "_" + "comments" + \
+        "-" + str(year) + "-" + str(month) + ".csv"
+
+
+def get_post_path(short, year, month):
+    return "data/" + short + "_data/" + short + "_" + "posts" + \
+        "-" + str(year) + "-" + str(month) + ".csv"
+
+
+def get_appended_path(short, year, month, post, suffix):
+    if post:
+        return "data/" + short + "_data/" + short + "_" + "posts" + \
+            "-" + str(year) + "-" + str(month) + "-" + suffix + ".csv"
+    else:
+        return "data/" + short + "_data/" + short + "_" + "comments" + \
+            "-" + str(year) + "-" + str(month) + "-" + suffix + ".csv"
