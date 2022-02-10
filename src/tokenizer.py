@@ -5,6 +5,8 @@ import re
 
 import vocab
 import constants
+import utility
+
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 from enum import Enum
@@ -19,34 +21,6 @@ short_words_not_to_remove = set.union(*keys)
 
 lemmatizer = WordNetLemmatizer()
 stemmer = PorterStemmer()
-
-
-def arr_to_string(arr):
-    s = str()
-    # s += "["
-    if len(arr) > 1:
-        for i in range(len(arr)-1):
-            s += arr[i]
-            s += "; "
-        s += arr[len(arr)-1]
-        # s += "]"
-    elif len(arr) == 1:
-        s += arr[0]
-        # s += "]"
-    # else:
-        # s += "[]"
-    return s
-
-
-def string_to_arr(str):
-    # "[ ..., a..., "
-    # read until first ,
-    # skip one offeset, repeat
-    if not ";" in str:
-        print(str)
-    else:
-        x = str.split("; ")
-        print(x)
 
 
 # WARNING: possibly inefficient
@@ -186,10 +160,10 @@ def tokenize_and_lemmetize(filepath, body_offsets, outputfile, op):
 
                     if op == Operation.lemmatize:
                         lemmetized = lemmetize(tt)
-                        row[body_offset] = arr_to_string(lemmetized)
+                        row[body_offset] = utility.arr_to_string(lemmetized)
                     if op == Operation.stemming:
                         stemmed = stem(tt)
-                        row[body_offset] = arr_to_string(stemmed)
+                        row[body_offset] = utility.arr_to_string(stemmed)
                     # print(tt)
 
                 writer.writerow(row)
@@ -199,12 +173,12 @@ def tokenize_and_lemmetize(filepath, body_offsets, outputfile, op):
 for (_, sub) in constants.subreddits:
     for y in constants.years_asc:
         for m in constants.months:
-            for (c, offset) in [("comments", (2, )), ("posts", (2, 3))]:
+            for (c, offset) in [("posts", (2, 3, 5))]:
                 inf = sub + "_data/" + sub + "_" + c + \
-                    "-" + str(y) + "-" + str(m) + ".csv"
+                    "-" + str(y) + "-" + str(m) + "-img.csv"
 
                 outf = sub + "_data/" + sub + "_" + c + "-" + \
-                    str(y) + "-" + str(m) + "-lemmetized.csv"
+                    str(y) + "-" + str(m) + "-lemmetized-img.csv"
 
                 print("Lemmetize: ", inf, " to ", outf)
                 tokenize_and_lemmetize(inf, offset, outf, Operation.lemmatize)

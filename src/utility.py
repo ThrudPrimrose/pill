@@ -19,3 +19,31 @@ def cull_zeros(arr, x):
     npl = np.array(l)
     npxs = np.array(xs)
     return (npl, npxs)
+
+
+def arr_to_string(arr):
+    s = str()
+    # s += "["
+    if len(arr) > 1:
+        for i in range(len(arr)-1):
+            s += arr[i]
+            s += "; "
+        s += arr[len(arr)-1]
+        # s += "]"
+    elif len(arr) == 1:
+        s += arr[0]
+        # s += "]"
+    # else:
+        # s += "[]"
+    return s
+
+
+def string_to_arr(str):
+    # "[ ..., a..., "
+    # read until first ,
+    # skip one offeset, repeat
+    if not ";" in str:
+        print(str)
+    else:
+        x = str.split("; ")
+        print(x)
