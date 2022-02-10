@@ -47,3 +47,15 @@ def string_to_arr(str):
     else:
         x = str.split("; ")
         print(x)
+
+
+def unzero_fields(arr):
+    for i in range(0, len(arr)):
+        if i > 0 and i < len(arr) - 1:
+            if arr[i] == 0:
+                if arr[i-1] == 0 and arr[i+1] != 0:
+                    arr[i] = arr[i+1]
+                elif arr[i+1] == 0 and arr[i-1] != 0:
+                    arr[i] = arr[i-1]
+                elif arr[i+1] != 0 and arr[i-1] != 0:
+                    arr[i] = float(arr[i-1] + arr[i+1])/2.0

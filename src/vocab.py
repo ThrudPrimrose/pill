@@ -181,7 +181,7 @@ trp_advanced_date_theory = {
     "solipsm"
 }
 
-blackpill_advanced_date_theory = {
+bps_advanced_date_theory = {
     "awalt",
     "beta",
     "alpha",
@@ -244,7 +244,7 @@ bps_gatekeeping = {
     "betabuxx"
 }
 
-blackpill_misogyny = {
+bps_misogyny = {
     "femoid",
     "foid",
     "hypergamy",
@@ -254,7 +254,7 @@ blackpill_misogyny = {
     "landwhale"
 }
 
-blackpill_rant = {
+bps_rant = {
     "kissless",
     "touchless",
     "hugless",
@@ -273,7 +273,7 @@ blackpill_rant = {
     "jby"
 }
 
-blackpill_cope = {
+bps_cope = {
     "rope",
     "gymcel",
     "sui",
@@ -290,7 +290,7 @@ blackpill_cope = {
     "statusmaxing"
 }
 
-blackpill_racism = {
+bps_racism = {
     "chad",
     "tyrone",
     "chang",

@@ -6,6 +6,7 @@ import csv
 import os
 import vocab
 import numpy as np
+import utility
 
 
 def string_to_arr(i_str):
@@ -44,12 +45,12 @@ def purge_bot_words(tokens):
 full_vocab = [set(vocab.fds_gatekeeping),
               set(vocab.fds_misandry),
               set(vocab.fds_advanced_date_theory),
-              set(vocab.blackpill_racism),
-              set(vocab.blackpill_cope),
-              set(vocab.blackpill_rant),
+              set(vocab.bps_racism),
+              set(vocab.bps_cope),
+              set(vocab.bps_rant),
               set(vocab.bps_gatekeeping),
-              set(vocab.blackpill_misogyny),
-              set(vocab.blackpill_advanced_date_theory),
+              set(vocab.bps_misogyny),
+              set(vocab.bps_advanced_date_theory),
               set(vocab.trp_gatekeeping),
               set(vocab.trp_advanced_date_theory),
               set(vocab.trp_misagony)]
@@ -137,7 +138,7 @@ for (_, sub) in constants.subreddits:
                     gatekeeping_percentage += freq
                 if sub == "fds" and word in vocab.fds_advanced_date_theory:
                     advanced_date_theory_percentage += freq
-                if sub == "bps" and word in vocab.blackpill_advanced_date_theory:
+                if sub == "bps" and word in vocab.bps_advanced_date_theory:
                     advanced_date_theory_percentage += freq
                 if sub == "trp" and word in vocab.trp_gatekeeping:
                     gatekeeping_percentage += freq
@@ -155,13 +156,13 @@ for (_, sub) in constants.subreddits:
                     signature_percentage += freq
                 if word == "chad" and sub == "bps":
                     signature_percentage += freq
-                if sub == "bps" and (word in vocab.blackpill_cope or word in vocab.blackpill_rant):
+                if sub == "bps" and (word in vocab.bps_cope or word in vocab.bps_rant):
                     cope_percentage += freq
-                if sub == "pp" and (word in vocab.blackpill_cope or word in vocab.blackpill_rant):
+                if sub == "pp" and (word in vocab.bps_cope or word in vocab.bps_rant):
                     cope_percentage += freq
-                if sub == "mr" and (word in vocab.blackpill_cope or word in vocab.blackpill_rant):
+                if sub == "mr" and (word in vocab.bps_cope or word in vocab.bps_rant):
                     cope_percentage += freq
-                if sub == "bps" and word in vocab.blackpill_racism:
+                if sub == "bps" and word in vocab.bps_racism:
                     racism_percentage += freq
                 if word in full_vocab:
                     full_percentage += freq
@@ -212,22 +213,10 @@ for (_, sub) in constants.subreddits:
         if i > 0 and i < len(constants.years_asc) * len(constants.months) - 1:
             if sub == "bps" or sub == "pp":
                 for yavg in [sub_advanced_date_theory, sub_gatekeeping, sub_full, sub_signature, sub_cope]:
-                    if yavg[i] == 0:
-                        if yavg[i-1] == 0 and yavg[i+1] != 0:
-                            yavg[i] = yavg[i+1]
-                        elif yavg[i+1] == 0 and yavg[i-1] != 0:
-                            yavg[i] = yavg[i-1]
-                        elif yavg[i+1] != 0 and yavg[i-1] != 0:
-                            yavg[i] = float(yavg[i-1] + yavg[i+1])/2.0
+                    utility.unzero_fields(yavg)
             else:
-                for yavg in [sub_advanced_date_theory, sub_gatekeeping, sub_full, sub_signature]:
-                    if yavg[i] == 0:
-                        if yavg[i-1] == 0 and yavg[i+1] != 0:
-                            yavg[i] = yavg[i+1]
-                        elif yavg[i+1] == 0 and yavg[i-1] != 0:
-                            yavg[i] = yavg[i-1]
-                        elif yavg[i+1] != 0 and yavg[i-1] != 0:
-                            yavg[i] = float(yavg[i-1] + yavg[i+1])/2.0
+                for yavg in [sub_advanced_date_theory, sub_gatekeeping, sub_full]:
+                    utility.unzero_fields(yavg)
 
     adt_percentage = np.array(sub_advanced_date_theory)
     g_percentage = np.array(sub_gatekeeping)

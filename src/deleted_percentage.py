@@ -24,14 +24,13 @@ def percentage_deleted(filepath_comments, filepath_posts):
             if "[removed]" in row:
                 p_deleted += 1
             p_total += 1
-    """
+
     with open(filepath_comments, "r") as csv_file:
         csv_reader = reader(csv_file)
         for row in csv_reader:
             if "[removed]" in row:
                 c_deleted += 1
             c_total += 1
-    """
 
     p_per = 0.0
     c_per = 0.0
@@ -93,20 +92,11 @@ for (sub, subreddit_short) in constants.subreddits:
                 p_dels.append(0.0)
                 c_dels.append(0.0)
 
-    for i in range(0, len(constants.years_asc) * len(constants.months)):
-        if i > 0 and i < len(constants.years_asc) * len(constants.months) - 1:
-            if sub == "bps" or sub == "pp":
-                for yavg in [p_dels, c_dels]:
-                    if yavg[i] == 0:
-                        if yavg[i-1] == 0 and yavg[i+1] != 0:
-                            yavg[i] = yavg[i+1]
-                        elif yavg[i+1] == 0 and yavg[i-1] != 0:
-                            yavg[i] = yavg[i-1]
-                        elif yavg[i+1] != 0 and yavg[i-1] != 0:
-                            yavg[i] = float(yavg[i-1] + yavg[i+1])/2.0
+    for arr in [p_dels, c_dels]:
+        utility.unzero_fields(arr)
 
-    # print("In total: " + "{:.4f}".format(100 * p_del_acc / p_tot_acc) + "% of posts and " + "{:.4f}".format(100 * c_del_acc / c_tot_acc) + "% of comments were deleted in "
-    #      + subreddit_short)
+    print("In total: " + "{:.4f}".format(100 * p_del_acc / p_tot_acc) + "% of posts and " + "{:.4f}".format(100 * c_del_acc / c_tot_acc) + "% of comments were deleted in "
+          + subreddit_short)
 
     ids = list(range(0, len(constants.months) * len(constants.years)))
 
@@ -138,7 +128,6 @@ for (sub, subreddit_short) in constants.subreddits:
 
     # OLS fitting for polynomials degree 1 to 5
     # https://www.kite.com/python/answers/how-to-plot-a-polynomial-fit-from-an-array-of-points-using-numpy-and-matplotlib-in-python
-    """
     for i in [1, 3, 5]:
         fit_linear_ols = np.polyfit(npx_c, npcomments, i)
         poly = np.poly1d(fit_linear_ols)
@@ -147,7 +136,6 @@ for (sub, subreddit_short) in constants.subreddits:
         s = np.sum(np.absolute(resi))
         ax[1].plot(npx_c, poly_y, label="OLS " +
                    str(i) + " " + "{:.2f}".format(s))
-    """
 
     for i in [1, 3, 5]:
         fit_linear_ols = np.polyfit(npx_p, npposts, i)

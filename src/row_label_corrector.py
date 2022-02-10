@@ -3,8 +3,6 @@ import sys
 import fileinput
 import constants
 
-shorts = ["fds", "bps", "trp", "mr", "pp"]
-
 
 def replaceAll(file, searchExp, replaceExp):
     if os.path.isfile(file):
@@ -17,7 +15,7 @@ def replaceAll(file, searchExp, replaceExp):
 
 for y in constants.years_asc:
     for m in constants.months:
-        for s in shorts:
+        for (_, s) in constants.subreddits:
             infp = s + "_data/" + s + "_posts" + \
                 "-" + str(y) + "-" + str(m) + ".csv"
             infc = s + "_data/" + s + "_comments" + \
