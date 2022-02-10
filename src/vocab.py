@@ -218,7 +218,7 @@ blackpill_advanced_date_theory = {
     "sme"
 }
 
-blackpill_gatekeeping = {
+bps_gatekeeping = {
     "normie",
     "roastie",
     "stacy",

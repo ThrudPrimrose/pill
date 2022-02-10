@@ -47,7 +47,7 @@ full_vocab = [set(vocab.fds_gatekeeping),
               set(vocab.blackpill_racism),
               set(vocab.blackpill_cope),
               set(vocab.blackpill_rant),
-              set(vocab.blackpill_gatekeeping),
+              set(vocab.bps_gatekeeping),
               set(vocab.blackpill_misogyny),
               set(vocab.blackpill_advanced_date_theory),
               set(vocab.trp_gatekeeping),
@@ -133,7 +133,7 @@ for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDat
                 freq = float(frequency)/float(wcount)
                 if sub == "fds" and word in vocab.fds_gatekeeping:
                     gatekeeping_percentage += freq
-                if sub == "bps" and word in vocab.blackpill_gatekeeping:
+                if sub == "bps" and word in vocab.bps_gatekeeping:
                     gatekeeping_percentage += freq
                 if sub == "fds" and word in vocab.fds_advanced_date_theory:
                     advanced_date_theory_percentage += freq
