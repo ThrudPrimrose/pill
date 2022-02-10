@@ -64,7 +64,7 @@ full_vocab = set.union(*full_vocab)
 # for (_, sub) in constants.subreddits:
 #    ("TheRedPill", "trp")
 #    ("FemaleDatingStrategy", "fds")("BlackPillScience", "bps")
-for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDatingStrategy", "fds")]:
+for (_, sub) in constants.subreddits:
     print("Calculating word frequence for ", sub)
 
     glob_tokens = []
@@ -81,7 +81,7 @@ for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDat
     for y in constants.years_asc:
         for m in constants.months:
             tokens = []
-            for c in ["comments", "posts"]:
+            for c in ["posts"]:
                 inf = sub + "_data/" + sub + "_" + c + "-" + \
                     str(y) + "-" + str(m) + "-lemmetized.csv"
 
@@ -171,8 +171,10 @@ for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDat
             sub_full.append(full_percentage)
             sub_signature.append(signature_percentage)
 
-            if sub == "bps":
+            if sub == "bps" or sub == "mr" or sub == "pp":
                 sub_cope.append(cope_percentage)
+            if sub == "bps":
+                sub_racism.append(racism_percentage)
 
             # print(u'{};{}'.format(word, float(frequency)/float(wcount)))
             # print(fdist['lvm'])
@@ -205,6 +207,27 @@ for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDat
 
     ids = np.array(
         list(range(0, len(constants.months) * len(constants.years))))
+
+    for i in range(0, len(constants.years_asc) * len(constants.months)):
+        if i > 0 and i < len(constants.years_asc) * len(constants.months) - 1:
+            if sub == "bps" or sub == "pp":
+                for yavg in [sub_advanced_date_theory, sub_gatekeeping, sub_full, sub_signature, sub_cope]:
+                    if yavg[i] == 0:
+                        if yavg[i-1] == 0 and yavg[i+1] != 0:
+                            yavg[i] = yavg[i+1]
+                        elif yavg[i+1] == 0 and yavg[i-1] != 0:
+                            yavg[i] = yavg[i-1]
+                        elif yavg[i+1] != 0 and yavg[i-1] != 0:
+                            yavg[i] = float(yavg[i-1] + yavg[i+1])/2.0
+            else:
+                for yavg in [sub_advanced_date_theory, sub_gatekeeping, sub_full, sub_signature]:
+                    if yavg[i] == 0:
+                        if yavg[i-1] == 0 and yavg[i+1] != 0:
+                            yavg[i] = yavg[i+1]
+                        elif yavg[i+1] == 0 and yavg[i-1] != 0:
+                            yavg[i] = yavg[i-1]
+                        elif yavg[i+1] != 0 and yavg[i-1] != 0:
+                            yavg[i] = float(yavg[i-1] + yavg[i+1])/2.0
 
     adt_percentage = np.array(sub_advanced_date_theory)
     g_percentage = np.array(sub_gatekeeping)

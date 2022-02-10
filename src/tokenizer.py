@@ -173,12 +173,12 @@ def tokenize_and_lemmetize(filepath, body_offsets, outputfile, op):
 for (_, sub) in constants.subreddits:
     for y in constants.years_asc:
         for m in constants.months:
-            for (c, offset) in [("posts", (2, 3, 5))]:
+            for (c, offset) in [("posts", (2, 3))]:
                 inf = sub + "_data/" + sub + "_" + c + \
-                    "-" + str(y) + "-" + str(m) + "-img.csv"
+                    "-" + str(y) + "-" + str(m) + ".csv"
 
                 outf = sub + "_data/" + sub + "_" + c + "-" + \
-                    str(y) + "-" + str(m) + "-lemmetized-img.csv"
+                    str(y) + "-" + str(m) + "-lemmetized.csv"
 
                 print("Lemmetize: ", inf, " to ", outf)
                 tokenize_and_lemmetize(inf, offset, outf, Operation.lemmatize)

@@ -107,7 +107,7 @@ def pull_comments_from_subreddit(subreddit, short_name, begin, end, limit, suffi
 
 for y in constants.years:
     for m in constants.months:
-        for (sub, short) in [("PurplePillDebate", "pp")]:
+        for (sub, short) in [("MensRights", "mr")]:
             if m == 12:
                 end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
                 begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
@@ -139,7 +139,7 @@ for y in constants.years:
 
 for y in constants.years:
     for m in constants.months:
-        for (sub, short) in [("PurplePillDebate", "pp")]:
+        for (sub, short) in [("MensRights", "mr")]:
             if m == 12:
                 end = int(dt.datetime(y + 1, 1, 1, 0, 0).timestamp())
                 begin = int(dt.datetime(y, 12, 1, 0, 0).timestamp())
