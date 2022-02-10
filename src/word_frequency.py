@@ -74,6 +74,7 @@ for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDat
     sub_full = []
     sub_signature = []
     sub_cope = []
+    sub_racism = []
     #sw_bps = "chad"
     #sw_fds = "lvm"
 
@@ -126,6 +127,7 @@ for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDat
             full_percentage = 0.0
             signature_percentage = 0.0
             cope_percentage = 0.0
+            racism_percentage = 0.0
 
             for (word, frequency) in fdist.items():
                 freq = float(frequency)/float(wcount)
@@ -141,14 +143,28 @@ for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDat
                     gatekeeping_percentage += freq
                 if sub == "trp" and word in vocab.trp_advanced_date_theory:
                     advanced_date_theory_percentage += freq
-                if word in full_vocab:
-                    full_percentage += freq
+                if sub == "pp" and word in vocab.trp_gatekeeping:
+                    gatekeeping_percentage += freq
+                if sub == "pp" and word in vocab.trp_advanced_date_theory:
+                    advanced_date_theory_percentage += freq
+                if sub == "mr" and word in vocab.trp_gatekeeping:
+                    gatekeeping_percentage += freq
+                if sub == "mr" and word in vocab.trp_advanced_date_theory:
+                    advanced_date_theory_percentage += freq
                 if word == "lvm" and sub == "fds":
                     signature_percentage += freq
                 if word == "chad" and sub == "bps":
                     signature_percentage += freq
                 if sub == "bps" and (word in vocab.blackpill_cope or word in vocab.blackpill_rant):
                     cope_percentage += freq
+                if sub == "pp" and (word in vocab.blackpill_cope or word in vocab.blackpill_rant):
+                    cope_percentage += freq
+                if sub == "mr" and (word in vocab.blackpill_cope or word in vocab.blackpill_rant):
+                    cope_percentage += freq
+                if sub == "bps" and word in vocab.blackpill_racism:
+                    racism_percentage += freq
+                if word in full_vocab:
+                    full_percentage += freq
 
             sub_gatekeeping.append(gatekeeping_percentage)
             sub_advanced_date_theory.append(advanced_date_theory_percentage)
@@ -199,9 +215,12 @@ for (_, sub) in [("BlackPillScience", "bps"), ("TheRedPill", "trp"), ("FemaleDat
     plt.plot(ids, g_percentage, label="gatekeeping vocab percentage")
     plt.plot(ids, f_percentage, label="hateful vocab percentage")
     plt.plot(ids, sig_percentage, label="signature word percentage")
-    if sub == "bps":
+    if sub == "bps" or sub == "pp" or sub == "mr":
         cpp = np.array(sub_cope)
-        plt.plot(ids, cpp, label="cope")
+        plt.plot(ids, cpp, label="fatalism")
+    if sub == "bps":
+        cpp = np.array(sub_racism)
+        plt.plot(ids, cpp, label="racism")
     plt.legend()
     tit = "Terminology percentage of " + sub
     inf = sub + "_data/terminology-" + sub
