@@ -14,6 +14,9 @@ for short in ["trp", "fds", "bps"]:
     counter = 1
     # reads all the files inside a folder
     for file in glob.glob(path):
+        if "lemmetized" in file:
+            continue
+
         # print(file)
         df = pd.read_csv(file)
         # creating a new column
@@ -41,7 +44,14 @@ for short in ["trp", "fds", "bps"]:
                         img = cv2.cvtColor(myImage, cv2.COLOR_BGR2GRAY)
                         ret, thresh = cv2.threshold(
                             img, 120, 255, cv2.THRESH_BINARY)
-                        description = pytesseract.image_to_string(thresh)
+
+                        description = ""
+                        try:
+                            description = pytesseract.image_to_string(
+                                thresh, timeout=2.0)
+                        except RuntimeError as timeout_error:
+                            pass
+
                         if description == "":
                             description = "[No Text]"
                         # adding the image description to the given row

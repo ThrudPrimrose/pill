@@ -209,7 +209,7 @@ for (_, sub) in constants.subreddits:
                 print("Lemmetize: ", inf, " to ", outf)
                 tokenize_and_lemmetize(inf, offset, outf, Operation.lemmatize)
 
-                outf = sub + "_data/" + sub + "_" + c + "-" + \
-                    str(y) + "-" + str(m) + "-stemmed.csv"
-                print("Stem: ", inf, " to ", outf)
-                tokenize_and_lemmetize(inf, offset, outf, Operation.stemming)
+                # outf = sub + "_data/" + sub + "_" + c + "-" + \
+                #    str(y) + "-" + str(m) + "-stemmed.csv"
+                #print("Stem: ", inf, " to ", outf)
+                #tokenize_and_lemmetize(inf, offset, outf, Operation.stemming)

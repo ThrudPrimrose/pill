@@ -124,24 +124,30 @@ for (sub, subreddit_short) in constants.subreddits:
 
     # OLS fitting for polynomials degree 1 to 5
     # https://www.kite.com/python/answers/how-to-plot-a-polynomial-fit-from-an-array-of-points-using-numpy-and-matplotlib-in-python
-    for i in [1, 3]:
+    for i in [1, 3, 5]:
         fit_linear_ols = np.polyfit(npx_c, npcomments, i)
         poly = np.poly1d(fit_linear_ols)
         poly_y = poly(npx_c)
-        ax[1].plot(npx_c, poly_y, label="OLS "+str(i))
+        resi = poly_y - npcomments
+        s = np.sum(np.absolute(resi))
+        ax[1].plot(npx_c, poly_y, label="OLS " +
+                   str(i) + " " + "{:.2f}".format(s))
 
-    for i in [1, 3]:
+    for i in [1, 3, 5]:
         fit_linear_ols = np.polyfit(npx_p, npposts, i)
         poly = np.poly1d(fit_linear_ols)
         poly_y = poly(npx_p)
-        ax[0].plot(npx_p, poly_y, label="OLS "+str(i))
+        resi = poly_y - npposts
+        s = np.sum(np.absolute(resi))
+        ax[0].plot(npx_p, poly_y, label="OLS " +
+                   str(i) + " " + "{:.2f}".format(s))
 
     ax[0].legend()
     ax[1].legend()
-    #ax[0].set_title('OLS with polynomials of various degrees')
+    # ax[0].set_title('OLS with polynomials of various degrees')
     # ax[0].set_xlabel('month, starting from ' +
     #                 str(starting_date[0]) + "." + str(starting_date[1]) + " + offset")
-    #ax[0].set_ylabel('avg number of post + comment per user')
+    # ax[0].set_ylabel('avg number of post + comment per user')
     fig.tight_layout(pad=3.0)
 
     fig.savefig(subreddit_short + "_deleted.pdf")
