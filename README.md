@@ -83,3 +83,5 @@ ending after those files are created user can check for the amount of possible u
 ```bash
 python3 src/gatekeep_detector.py
 ```
+
+The report created with the script collection can be found in the repository.
